@@ -1,0 +1,403 @@
+<!--
+/* ===========================================================================
+* Copyright (c) 2008, 2011, Oracle and/or its affiliates. All rights reserved. 
+ * ===========================================================================
+ * $Header: rgbustores/webapp/transaction-webapp/WEB-INF/360/struts-transaction_tracker_actions.xml /rgbustores_13.4x_generic_branch/1 2011/05/06 12:32:10 mszekely Exp $
+ * ===========================================================================
+ * NOTES
+ * <other useful comments, qualifications, etc.>
+ *
+ * MODIFIED    (MM/DD/YY)
+ *    blarsen   09/27/10 - Removed action for old-style/obsolete jsp help.
+ *    mchellap  07/22/10 - Added billpay mapping
+ *    cgreene   05/26/10 - convert to oracle packaging
+ *    abondala  01/02/10 - Update Header date
+ *    djenning  06/26/09 - checking for session timeout
+ *    djenning  06/04/09 - if you have no filename for exporting signature
+ *                         capture, we were going to a blank screen.
+ *    ohorne    03/30/09 - set validate to false for search actions without an
+ *                         input defined
+ *    acadar    02/23/09 - additional changes for time
+ *    acadar    02/19/09 - refactor time display for all supported locale
+ *    acadar    01/14/09 - removed comment
+ *    acadar    01/14/09 - add mapping for error
+ *    mkochumm  12/02/08 - i18n customer info page
+ *
+ * ===========================================================================
+ */
+-->
+<action path="/centralizedElectronicJournal/eJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.EJournalAction"
+	scope="request">
+    <forward name="SearchByItem" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+    <forward name="SearchByTransaction" path="/centralizedElectronicJournal/ejTransactionSearch.do"/>
+    <forward name="SearchBySalesAssociate" path="/centralizedElectronicJournal/ejSalesAssociateSearch.do"/>
+    <forward name="SearchByCustomer" path="/centralizedElectronicJournal/ejCustomerSearch.do"/>
+    <forward name="SearchBySigCap" path="/centralizedElectronicJournal/sigCapSearch.do"/>
+    <forward name="SearchByEJournal" path="/centralizedElectronicJournal/ejournalSearch.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/searchDone"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchDoneAction"
+	scope="request">
+    <forward name="SearchByItem" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+	<forward name="SearchByItemMultiple" path="/centralizedElectronicJournal/searchTransactionByItem.do"/>
+    <forward name="SearchByTransaction" path="/centralizedElectronicJournal/ejTransactionSearch.do"/>
+    <forward name="SearchByTransactionMultiple" path="/centralizedElectronicJournal/ejTransactionSearchResults.do"/>
+    <forward name="SearchBySalesAssociate" path="/centralizedElectronicJournal/ejSalesAssociateSearch.do"/>
+	<forward name="SearchBySalesAssociateMultiple" path="/centralizedElectronicJournal/ejSalesAssociateSearchResults.do"/>
+    <forward name="SearchByCustomer" path="/centralizedElectronicJournal/ejCustomerSearch.do"/>
+	<forward name="SearchByCustomerMultiple" path="/centralizedElectronicJournal/ejCustomerSearchResults.do"/>
+    <forward name="SearchBySigCap" path="/centralizedElectronicJournal/sigCapSearch.do"/>
+	<forward name="SearchBySigCapMultiple" path="/centralizedElectronicJournal/sigCapSearchResults.do"/>
+    <forward name="SearchByEJournal" path="/centralizedElectronicJournal/ejournalSearch.do"/>
+	<forward name="SearchByEJournalMultiple" path="/centralizedElectronicJournal/ejournalSearchResults.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejournalSearch"
+	type="oracle.retail.stores.webmodules.transaction.ui.StartSearchAction"
+	name="searchTransactionForm"
+	scope="request"
+	validate="false">
+	<forward name="success" path="centralizedElectronicJournal.ejournalSearch"/>
+</action>
+<action path="/centralizedElectronicJournal/sigCapSearch"
+	type="oracle.retail.stores.webmodules.transaction.ui.StartSearchAction"
+	name="searchTransactionForm"
+	scope="request"
+	validate="false">
+	<forward name="success" path="centralizedElectronicJournal.sigCapSearch"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejItemSearch"
+	type="oracle.retail.stores.webmodules.transaction.ui.StartSearchAction"
+	name="searchTransactionForm"
+	scope="request"
+	validate="false">
+	<forward name="success" path="centralizedElectronicJournal.ejItemSearch"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejTransactionSearch"
+	type="oracle.retail.stores.webmodules.transaction.ui.StartSearchAction"
+	name="searchTransactionForm"
+	scope="request"
+	validate="false">
+	<forward name="success" path="centralizedElectronicJournal.ejTransactionSearch"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejSalesAssociateSearch"
+	type="oracle.retail.stores.webmodules.transaction.ui.StartSearchAction"
+	name="searchTransactionForm"
+	scope="request"
+	validate="false">
+	<forward name="success" path="centralizedElectronicJournal.ejSalesAssociateSearch"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejCustomerSearch"
+	type="oracle.retail.stores.webmodules.transaction.ui.StartSearchAction"
+	name="searchTransactionForm"
+	scope="request"
+	validate="false">
+	<forward name="success" path="centralizedElectronicJournal.ejCustomerSearch"/>
+</action>
+
+<action path="/centralizedElectronicJournal/showOnlyEJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowEJournalAction"
+	name="transactionKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/searchDone.do">
+    <forward name="success" path="centralizedElectronicJournal.journalOnlyView"/>
+</action>
+
+<action path="/centralizedElectronicJournal/showEJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowEJournalAction"
+	name="ejournalKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/searchDone.do">
+    <forward name="success" path="centralizedElectronicJournal.journalView"/>
+</action>
+<!--action tag added by Dharmendra on 28/11/2016 to search by loyality id -->
+<action path="/centralizedElectronicJournal/showLoyalityEJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowLoyalityEJournalAction"
+	name="ejournalKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/searchDone.do">
+    <forward name="success" path="centralizedElectronicJournal.loyalityJournalView"/>
+</action>
+<!--action tag added by Dharmendra on 28/11/2016 to update loyality details -->
+<action path="/centralizedElectronicJournal/updateLoyalityEJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.UpdateLoyalityEJournalAction"
+	name="loyalityTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/searchDone.do">
+    <forward name="success" path="/centralizedElectronicJournal/ejTransactionSearch.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/showOnlyEJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowEJournalAction"
+	name="ejournalKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/searchDone.do">
+    <forward name="success" path="centralizedElectronicJournal.journalView"/>
+</action>
+
+<action path="/centralizedElectronicJournal/showSigCapView"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowSignatureDataAction"
+	name="transactionKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejSignatureCaptureView.jsp">
+    <forward name="success" path="centralizedElectronicJournal.ejSignatureCaptureView"/>
+</action>
+
+<action path="/centralizedElectronicJournal/showCustomer"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowCustomerAction"
+  	name="transactionKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/searchDone.do">
+    <forward name="success" path="centralizedElectronicJournal.showCustomer"/>
+	<forward name="NorthAmerica" path="centralizedElectronicJournal.showCustomer"/>
+	<forward name="Asia" path="centralizedElectronicJournal.showCustomerAsia"/>
+	<forward name="WesternEurope" path="centralizedElectronicJournal.showCustomerWesternEurope"/>
+</action>
+
+
+<action path="/centralizedElectronicJournal/ejournalSearchResults"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchEJournalAction"
+	name="searchTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejournalSearch.do">
+    <forward name="oneResult" path="/centralizedElectronicJournal/showEJournal.do"/>
+    <forward name="multipleResults" path="centralizedElectronicJournal.ejournalSearchResults"/>
+</action>
+
+<action path="/centralizedElectronicJournal/sigCapSearchResults"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchTransactionBySignatureCaptureAction"
+	name="searchTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/sigCapSearch.do">
+    <forward name="oneResult" path="/centralizedElectronicJournal/showDetails.do"/>
+    <forward name="multipleResults" path="centralizedElectronicJournal.searchBySigSearchResults"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejTransactionSearchResults"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchEJournalByTransactionAction"
+	name="searchTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejTransactionSearch.do">
+    <forward name="oneResult" path="/centralizedElectronicJournal/showDetails.do"/>
+    <forward name="multipleResults" path="centralizedElectronicJournal.searchByTransactionSearchResults"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejCustomerSearchResults"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchTransactionByCustomerAction"
+	name="searchTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejCustomerSearch.do">
+    <forward name="oneResult" path="/centralizedElectronicJournal/showDetails.do"/>
+    <forward name="multipleResults" path="centralizedElectronicJournal.searchByCustomerSearchResults"/>
+</action>
+
+<action path="/centralizedElectronicJournal/showDetails"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowDetailsAction"
+	name="transactionKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/eJournal.do"
+	validate="false">
+    <forward name="transactionDetailView" path="/centralizedElectronicJournal/ejTransactionDetailDataView.do"/>
+    <forward name="signatureCaptureView" path="/centralizedElectronicJournal/showSigCapView.do"/>
+    <forward name="eJournalView" path="/centralizedElectronicJournal/showEJournal.do"/>
+    <forward name="customerView" path="/centralizedElectronicJournal/showCustomer.do"/>
+    <forward name="notAllowed" path="/centralizedElectronicJournal/eJournal.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/ejTransactionDetailDataView"
+	type="oracle.retail.stores.webmodules.transaction.ui.ViewTransactionAction"
+	name="transactionKeyForm"
+	scope="request"
+	input="/centralizedElectronicJournal/eJournal.do">
+    <forward name="saleTransactionDetailView" path="centralizedElectronicJournal.saleReturnTransactionDetailDataView"/>
+    <forward name="returnTransactionDetailView" path="centralizedElectronicJournal.saleReturnTransactionDetailDataView"/>
+    <forward name="voidTransactionDetailView" path="centralizedElectronicJournal.voidTransactionDetailDataView"/>
+    <forward name="noSaleTransactionDetailView" path="centralizedElectronicJournal.noSaleTransactionDetailDataView"/>
+    <forward name="cancelTransactionDetailView" path="centralizedElectronicJournal.cancelTransactionDetailDataView"/>
+    <forward name="tillLoanTransactionDetailView" path="centralizedElectronicJournal.tillLoanTransactionDetailDataView"/>
+    <forward name="tillPickupTransactionDetailView" path="centralizedElectronicJournal.tillPickupTransactionDetailDataView"/>
+    <forward name="tillPayInTransactionDetailView" path="centralizedElectronicJournal.tillPayInTransactionDetailDataView"/>
+    <forward name="tillPayOutTransactionDetailView" path="centralizedElectronicJournal.tillPayOutTransactionDetailDataView"/>
+    <forward name="houseAccountPaymentTransactionDetailView" path="centralizedElectronicJournal.houseAccountPaymentTransactionDetailDataView"/>
+    <forward name="openStoreTransactionDetailView" path="centralizedElectronicJournal.openStoreTransactionDetailDataView"/>
+    <forward name="closeStoreTransactionDetailView" path="centralizedElectronicJournal.closeStoreTransactionDetailDataView"/>
+    <forward name="openRegisterTransactionDetailView" path="centralizedElectronicJournal.openRegisterTransactionDetailDataView"/>
+    <forward name="closeRegisterTransactionDetailView" path="centralizedElectronicJournal.closeRegisterTransactionDetailDataView"/>
+    <forward name="openTillTransactionDetailView" path="centralizedElectronicJournal.openTillTransactionDetailDataView"/>
+    <forward name="closeTillTransactionDetailView" path="centralizedElectronicJournal.closeTillTransactionDetailDataView"/>
+    <forward name="billPayTransactionDetailView" path="centralizedElectronicJournal.billPayTransactionDetailDataView"/>
+
+    <forward name="suspendTillTransactionDetailView" path="centralizedElectronicJournal.suspendTillTransactionDetailDataView"/>
+    <forward name="resumeTillTransactionDetailView" path="centralizedElectronicJournal.resumeTillTransactionDetailDataView"/>
+
+    <forward name="specialOrderTransactionDetailView" path="centralizedElectronicJournal.specialOrderTransactionDetailDataView"/>
+    <forward name="orderCompleteTransactionDetailView" path="centralizedElectronicJournal.orderCompleteTransactionDetailDataView"/>
+    <forward name="orderCancelTransactionDetailView" path="centralizedElectronicJournal.orderCancelTransactionDetailDataView"/>
+    <forward name="orderPartialTransactionDetailView" path="centralizedElectronicJournal.orderPartialTransactionDetailDataView"/>
+	<forward name="redeemTransactionDetailView" path="centralizedElectronicJournal.redeemTransactionDetailDataView"/>
+    <forward name="layawayTransactionDetailView" path="centralizedElectronicJournal.layawayTransactionDetailDataView"/>
+    <forward name="layawayCompleteTransactionDetailView" path="centralizedElectronicJournal.layawayTransactionDetailDataView"/>
+    <forward name="layawayPaymentTransactionDetailView" path="centralizedElectronicJournal.layawayTransactionDetailDataView"/>
+    <forward name="layawayDeleteTransactionDetailView" path="centralizedElectronicJournal.layawayTransactionDetailDataView"/>
+	<forward name="instantCreditTransactionDetailView" path="centralizedElectronicJournal.instantCreditTransactionDetailDataView"/>
+     <forward name="unsupportedTransaction" path="centralizedElectronicJournal.ejUnsupportedTransaction"/>
+    <forward name="noTransaction" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+
+</action>
+
+<action path="/centralizedElectronicJournal/exportMultipleEJournalOptions"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowMultipleTransactionExportOptionsAction"
+	scope="request"
+	input="/centralizedElectronicJournal/ejournalSearchResults.do">
+    <forward name="success" path="centralizedElectronicJournal.exportMultipleEJournalOptions"/>
+    <forward name="timeout" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+
+
+</action>
+
+<action path="/centralizedElectronicJournal/exportMultipleTransactionOptions"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowMultipleTransactionExportOptionsAction"
+	scope="request"
+	input="/centralizedElectronicJournal/ejTransactionSearchResults.do">
+	<!-- The following forwards are defined for export multiple transaction without selecting any -->
+	<!-- We will direct the user back to the original page -->
+	<forward name="SearchByItem" path="/centralizedElectronicJournal/searchTransactionByItem.do"/>
+    <forward name="SearchByCustomer" path="/centralizedElectronicJournal/ejCustomerSearchResults.do"/>
+    <forward name="SearchBySalesAssociate" path="/centralizedElectronicJournal/ejSalesAssociateSearchResults.do"/>
+    <forward name="SearchBySigCap" path="/centralizedElectronicJournal/sigCapSearchResults.do"/>
+    <!-- end of failure settings -->
+    <forward name="success" path="centralizedElectronicJournal.exportMultipleTransactionOptions"/>
+</action>
+
+<action path="/centralizedElectronicJournal/exportMultipleEJournalDetails"
+	type="oracle.retail.stores.webmodules.transaction.ui.ExportMultipleEJournalDetailsAction"
+	scope="request"
+	input="/centralizedElectronicJournal/ejournalSearchResults.do">
+    <forward name="success" path="/centralizedElectronicJournal/ejournalSearchResults.do"/>
+    <forward name="timeout" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+     <forward name="error" path="/centralizedElectronicJournal/exportMultipleEJournalOptions.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/exportMultipleTransactionDetails"
+	type="oracle.retail.stores.webmodules.transaction.ui.ExportMultipleTransactionDetailsAction"
+	scope="request"
+	input="/centralizedElectronicJournal/ejTransactionSearchResults.do">
+    <forward name="success" path="/centralizedElectronicJournal/ejTransactionSearchResults.do"/>
+    <forward name="timeout" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+    <forward name="error" path="/centralizedElectronicJournal/exportMultipleTransactionOptions.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/exportShowCustomerOptions"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowCustomerDetailsExportOptionsAction"
+    name="transactionKeyForm"
+    validate="true"
+	scope="request"
+	input="/centralizedElectronicJournal/showCustomer.do">
+    <forward name="success" path="centralizedElectronicJournal.exportCustomerOptions"/>
+</action>
+
+<action path="/centralizedElectronicJournal/exportCustomerDetails"
+	type="oracle.retail.stores.webmodules.transaction.ui.ExportCustomerDetailsAction"
+    name="transactionKeyForm"
+    validate="true"
+	scope="request"
+	input="/centralizedElectronicJournal/showCustomer.do">
+    <forward name="success" path="/centralizedElectronicJournal/exportShowCustomerOptions.do"/>
+</action>
+
+<action path="/centralizedElectronicJournal/exportTransactionOptions"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowTransactionDetailsExportOptionsAction"
+	name="transactionKeyForm"
+	scope="request"
+    input="/centralizedElectronicJournal/ejTransactionDetailDataView.do">
+    <forward name="success" path="centralizedElectronicJournal.exportTransactionOptions"/>
+</action>
+<action path="/centralizedElectronicJournal/exportTransactionDetails"
+	type="oracle.retail.stores.webmodules.transaction.ui.ExportTransactionDetailsAction"
+	name="exportEJournalForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejTransactionDetailDataView.do">
+    <forward name="success" path="/centralizedElectronicJournal/ejTransactionDetailDataView.do"/>
+    <forward name="timeout" path="/centralizedElectronicJournal/ejItemSearch.do"/>
+    <forward name="error" path="/centralizedElectronicJournal/exportTransactionOptions.do"/>
+</action>
+
+
+<action path="/centralizedElectronicJournal/viewSignatureImage"
+	type="oracle.retail.stores.webmodules.transaction.ui.ViewSignatureImageAction"
+	name="viewSignatureImageForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejSignatureCaptureView.jsp">
+</action>
+<action path="/centralizedElectronicJournal/exportSignatureCapture"
+	type="oracle.retail.stores.webmodules.transaction.ui.ExportSignatureCaptureDataViewAction"
+	name="exportEJournalForm"
+	scope="request"
+	input="centralizedElectronicJournal.ejSignatureCaptureView">
+    <forward name="success" path="centralizedElectronicJournal.ejExportSignatureCaptureData"/>
+    <forward name="error" path="/centralizedElectronicJournal/exportSignatureCaptureOptions.do"/>
+    <forward name="invalidToken" path="/centralizedElectronicJournal/ejTransactionSearch.do"/>
+</action>
+<action path="/centralizedElectronicJournal/exportSignatureCaptureOptions"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowSignatureCaptureDataViewExportOptionsAction"
+	name="transactionKeyForm"
+	scope="request"
+	input="centralizedElectronicJournal.ejSignatureCaptureView">
+    <forward name="success" path="centralizedElectronicJournal.ejExportSignatureCaptureData"/>
+    <forward name="error" path="/centralizedElectronicJournal/exportSignatureCaptureOptions.do"/>
+</action>
+<action path="/centralizedElectronicJournal/exportEJournal"
+	type="oracle.retail.stores.webmodules.transaction.ui.ExportEJournalAction"
+	name="exportEJournalForm"
+	scope="request"
+	input="centralizedElectronicJournal.journalView">
+    <forward name="success" path="centralizedElectronicJournal.ejExportJournalData"/>
+    <forward name="timeout" path="/centralizedElectronicJournal/ejournalSearch.do"/>
+    <forward name="error" path="/centralizedElectronicJournal/exportEJournalOptions.do"/>
+</action>
+<action path="/centralizedElectronicJournal/exportEJournalOptions"
+	type="oracle.retail.stores.webmodules.transaction.ui.ShowEJournalExportOptionsAction"
+	name="ejournalKeyForm"
+	scope="request"
+	input="centralizedElectronicJournal.journalView">
+    <forward name="success" path="centralizedElectronicJournal.ejExportJournalData"/>
+</action>
+<action path="/centralizedElectronicJournal/searchTransactionByItem"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchTransactionByItemAction"
+	name="searchTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejItemSearch.do">
+    <forward name="oneResult" path="/centralizedElectronicJournal/showDetails.do"/>
+    <forward name="multipleResults" path="centralizedElectronicJournal.searchByItemSearchResults"/>
+</action>
+<!--
+     <action path="/centralizedElectronicJournal/viewTransactionItem"
+	     type="oracle.retail.stores.webmodules.transaction.ui.ViewTransactionItemAction"
+	     name="viewTransactionItemForm"
+	     scope="request"
+	     input="centralizedElectronicJournal.ejItemSearch">
+	 <forward name="success" path="centralizedElectronicJournal.ejItemDetailDataView"/>
+     </action> -->
+
+<!-- Transaction Sales Associate actions -->
+<action path="/centralizedElectronicJournal/ejSalesAssociateSearchResults"
+	type="oracle.retail.stores.webmodules.transaction.ui.SearchTransactionBySalesAssociateAction"
+	name="searchTransactionForm"
+	scope="request"
+	input="/centralizedElectronicJournal/ejSalesAssociateSearch.do">
+    <forward name="oneResult" path="/centralizedElectronicJournal/showDetails.do"/>
+    <forward name="multipleResults" path="centralizedElectronicJournal.searchBySalesAssociateSearchResults"/>
+</action>
+
+<action path="/viewHierarchy"
+	type="oracle.retail.stores.webmodules.store.ui.ViewHierarchyAction"
+	scope="request">
+    <forward name="success" path="/centralizedElectronicJournal/searchHierarchy.jsp"/>
+</action>
+

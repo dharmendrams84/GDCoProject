@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+/* ===========================================================================
+* Copyright (c) 2008, 2011, Oracle and/or its affiliates. All rights reserved. 
+ * ===========================================================================
+ * $Header: rgbustores/webapp/transaction-webapp/WEB-INF/360/tiles-transaction_tracker.xml /rgbustores_13.4x_generic_branch/1 2011/05/06 12:32:10 mszekely Exp $
+ * ===========================================================================
+ * NOTES
+ * <other useful comments, qualifications, etc.>
+ *
+ * MODIFIED    (MM/DD/YY)
+ *    mchellap  07/22/10 - Added billpay transaction detailed data view
+ *                         description
+ *    abondala  01/02/10 - Update Header date
+ *    mkochumm  12/02/08 - i18n customer info page
+ *
+ * ===========================================================================
+ */
+-->
+
+<!DOCTYPE tiles-definitions PUBLIC
+    "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+    "http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<tiles-definitions>
+
+    <!-- Transaction Tracker (EJournal) Pages -->
+    <definition name="ejournal" extends="co">
+        <put name="primaryIndex" value="menu.transaction"/>
+        <put name="secondaryIndex" value="menu.ejournal.search"/>
+	<!-- <put name="sideNavIndex" value="Item"/> -->
+        <put name="helpURL" value="journalview"/>
+        <putList name="secondary">
+            <add value="menu.ejournal.search"/>
+        </putList>
+        <putList name="secondaryURLs">
+	    <add value="centralizedElectronicJournal/eJournal.do"/>
+        </putList>
+        <putList name="sideNav">
+            <add value="menu.ejournal.search.by"/>
+            <add value="menu.centralizedElectronicJournal.ejItemSearch"/>
+            <add value="menu.centralizedElectronicJournal.ejTransactionSearch"/>
+            <add value="menu.centralizedElectronicJournal.ejSalesAssociateSearch"/>
+            <add value="menu.centralizedElectronicJournal.ejCustomerSearch"/>
+            <add value="menu.centralizedElectronicJournal.sigCapSearch"/>
+            <add value="menu.centralizedElectronicJournal.ejournalSearch"/>
+        </putList>
+        <putList name="sideNavRoles">
+            <add value="BLANK"/>
+            <add value="search_by_item"/>
+            <add value="search_by_trans"/>
+            <add value="search_by_assoc"/>
+            <add value="search_by_cust"/>
+            <add value="search_by_sigcap"/>
+            <add value="search_by_ejournal"/>
+        </putList>
+        <putList name="sideNavURLs">
+            <add value="BLANK"/>
+            <add value="centralizedElectronicJournal/ejItemSearch.do"/>
+            <add value="centralizedElectronicJournal/ejTransactionSearch.do"/>
+            <add value="centralizedElectronicJournal/ejSalesAssociateSearch.do"/>
+            <add value="centralizedElectronicJournal/ejCustomerSearch.do"/>
+            <add value="centralizedElectronicJournal/sigCapSearch.do"/>
+            <add value="centralizedElectronicJournal/ejournalSearch.do"/>
+        </putList>
+    </definition>
+
+    <definition name="ejournal.search.layout" path="/centralizedElectronicJournal/searchLayout.jsp">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/ejItemSearch.do"/>
+        <put name="searchHeader" value="/centralizedElectronicJournal/searchHeader.jsp"/>
+        <put name="searchHierarchy" value="/viewHierarchy.do"/>
+        <put name="searchButtonsTop" value="/centralizedElectronicJournal/searchButtons.jsp"/>
+        <put name="searchButtonsBottom" value="/centralizedElectronicJournal/searchButtonsBottom.jsp"/>
+        <put name="searchFooter" value="/centralizedElectronicJournal/searchFooter.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejournalSearch" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejournalSearch"/>
+        <put name="title" value="centralizedElectronicJournal.ejournalSearch.title"/>
+        <put name="helpURL" value="searchbyelectronicjournals"/>
+        <put name="body" value="centralizedElectronicJournal.ejournalSearch.layout"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejournalSearch.layout" extends="ejournal.search.layout">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/ejournalSearch.do"/>
+        <put name="searchTitle" value="centralizedElectronicJournal.ejournalSearch.title"/>
+        <put name="expandSections" value="ejournalCriteria"/>
+        <put name="searchAction" value="/centralizedElectronicJournal/ejournalSearchResults.do"/>
+        <put name="searchCriteria1" value="/centralizedElectronicJournal/ejournalCriteria.jsp"/>
+        <put name="searchCriteria2" value="/centralizedElectronicJournal/resultsCriteria.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.sigCapSearch" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.sigCapSearch"/>
+        <put name="title" value="centralizedElectronicJournal.sigCapSearch.title"/>
+        <put name="helpURL" value="searchbysignaturecapture"/>
+        <put name="body" value="centralizedElectronicJournal.sigCapSearch.layout"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.sigCapSearch.layout" extends="ejournal.search.layout">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/sigCapSearch.do"/>
+        <put name="searchTitle" value="centralizedElectronicJournal.sigCapSearch.title"/>
+        <put name="expandSections" value="signatureCaptureCriteria"/>
+        <put name="searchAction" value="/centralizedElectronicJournal/sigCapSearchResults.do"/>
+        <put name="searchCriteria1" value="/centralizedElectronicJournal/signatureCaptureCriteria.jsp"/>
+        <put name="searchCriteria2" value="/centralizedElectronicJournal/resultsCriteria.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejTransactionSearch" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejTransactionSearch"/>
+        <put name="title" value="centralizedElectronicJournal.ejTransactionSearch.title"/>
+        <put name="body" value="centralizedElectronicJournal.ejTransactionSearch.layout"/>
+        <put name="helpURL" value="searchingbytransaction"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejTransactionSearch.layout" extends="ejournal.search.layout">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/ejTransactionSearch.do"/>
+        <put name="searchTitle" value="centralizedElectronicJournal.ejTransactionSearch.title"/>
+        <put name="expandSections" value="transactionCriteria"/>
+        <put name="searchAction" value="/centralizedElectronicJournal/ejTransactionSearchResults.do"/>
+        <put name="searchCriteria1" value="/centralizedElectronicJournal/transactionCriteria.jsp"/>
+        <put name="searchCriteria2" value="/centralizedElectronicJournal/tenderCriteria.jsp"/>
+        <put name="searchCriteria3" value="/centralizedElectronicJournal/resultsCriteria.jsp"/>
+        <put name="helpURL" value="searchingbytransaction"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejItemSearch" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejItemSearch"/>
+        <put name="title" value="centralizedElectronicJournal.ejItemSearch.title"/>
+        <put name="helpURL" value="searchbyitem"/>
+        <put name="body" value="centralizedElectronicJournal.ejItemSearch.layout"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejItemSearch.layout" extends="ejournal.search.layout">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/ejItemSearch.do"/>
+        <put name="searchTitle" value="centralizedElectronicJournal.ejItemSearch.title"/>
+        <put name="searchAction" value="/centralizedElectronicJournal/searchTransactionByItem.do"/>
+        <put name="expandSections" value="itemCriteria"/>
+        <put name="searchCriteria1" value="/centralizedElectronicJournal/itemCriteria.jsp"/>
+        <put name="searchCriteria2" value="/centralizedElectronicJournal/transactionCriteria.jsp"/>
+        <put name="searchCriteria3" value="/centralizedElectronicJournal/resultsCriteria.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejSalesAssociateSearch" extends="ejournal">
+        <put name="title" value="centralizedElectronicJournal.ejSalesAssociateSearch.title"/>
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejSalesAssociateSearch"/>
+        <put name="helpURL" value="searchbysalesassociate"/>
+        <put name="body" value="centralizedElectronicJournal.ejSalesAssociateSearch.layout"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejSalesAssociateSearch.layout" extends="ejournal.search.layout">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/ejSalesAssociateSearch.do"/>
+        <put name="searchTitle" value="centralizedElectronicJournal.ejSalesAssociateSearch.title"/>
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejSalesAssociateSearch"/>
+        <put name="searchAction" value="/centralizedElectronicJournal/ejSalesAssociateSearchResults.do"/>
+        <put name="expandSections" value="salesAssociateCriteria"/>
+        <put name="searchCriteria1" value="/centralizedElectronicJournal/salesAssociateCriteria.jsp"/>
+        <put name="searchCriteria2" value="/centralizedElectronicJournal/transactionCriteria.jsp"/>
+        <put name="searchCriteria3" value="/centralizedElectronicJournal/itemCriteria.jsp"/>
+        <put name="searchCriteria4" value="/centralizedElectronicJournal/resultsCriteria.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejCustomerSearch" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejCustomerSearch"/>
+        <put name="title" value="centralizedElectronicJournal.ejCustomerSearch.title"/>
+        <put name="helpURL" value="searchbycustomer"/>
+        <put name="body" value="centralizedElectronicJournal.ejCustomerSearch.layout"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejCustomerSearch.layout" extends="ejournal.search.layout">
+        <put name="resetSearchURL" value="/centralizedElectronicJournal/ejCustomerSearch.do"/>
+        <put name="searchTitle" value="centralizedElectronicJournal.ejCustomerSearch.title"/>
+        <put name="searchAction" value="/centralizedElectronicJournal/ejCustomerSearchResults.do"/>
+        <put name="expandSections" value="customerCriteria"/>
+        <put name="searchCriteria1" value="/centralizedElectronicJournal/customerCriteria.jsp"/>
+        <put name="searchCriteria2" value="/centralizedElectronicJournal/transactionCriteria.jsp"/>
+        <put name="searchCriteria3" value="/centralizedElectronicJournal/resultsCriteria.jsp"/>
+    </definition>
+
+
+    <!-- Transaction Detail Views -->
+
+    <definition name="centralizedElectronicJournal.transactionDetailDataView.layout"
+		path="/centralizedElectronicJournal/transactionDetails/layout.jsp">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeader.jsp"/>
+        <put name="transactionDetailHeader" value="/centralizedElectronicJournal/transactionDetails/header.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/body.jsp"/>
+        <put name="transactionDetailFooter" value="/centralizedElectronicJournal/transactionDetails/footer.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.saleReturnTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/saleReturnTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.transactionDetailDataGenericView" extends="ejournal">
+        <put name="helpURL" value="transactiondetail"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.saleReturnTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.saleReturnTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.voidTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/voidTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.voidTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.voidTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.noSaleTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/noSaleTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.noSaleTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.noSaleTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.cancelTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/cancelTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.cancelTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.cancelTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillLoanTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/tillLoanTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillLoanTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillLoanTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillPickupTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/tillPickupTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillPickupTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillPickupTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillPayInTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/tillPayInTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillPayInTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillPayInTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillPayOutTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/tillPayOutTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillPayOutTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillPayOutTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.houseAccountPaymentTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/houseAccountPaymentTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.houseAccountPaymentTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.houseAccountPaymentTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.storeTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/storeTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.openStoreTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.storeTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.closeStoreTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.storeTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.registerTransactionDetailDataView.layout"
+		extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/registerTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.openRegisterTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.registerTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.closeRegisterTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.registerTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.tillTransactionDetailDataView.layout" extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/tillTransactionDetailView.jsp"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.openTillTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.suspendTillTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.resumeTillTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.closeTillTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.tillTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+	<definition name="centralizedElectronicJournal.specialOrderTransactionDetailDataView.layout" extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+		<put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeader.jsp"/>
+		<put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/specialOrderTransactionDetailView.jsp"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.specialOrderTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.specialOrderTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.orderCompleteTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.specialOrderTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.orderCancelTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.specialOrderTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.orderPartialTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.specialOrderTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.layawayTransactionDetailDataView.layout" extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+		<put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeader.jsp"/>
+		<put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/layawayTransactionDetailView.jsp"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.layawayTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.layawayTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.redeemTransactionDetailDataView.layout" extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+		<put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+		<put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/redeemTransactionDetailView.jsp"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.redeemTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.redeemTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+
+	<definition name="centralizedElectronicJournal.instantCreditTransactionDetailDataView.layout" extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+		<put name="transactionDetailPageHeader" value="/centralizedElectronicJournal/transactionDetails/pageHeaderNoSig.jsp"/>
+		<put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/instantCreditTransactionDetailView.jsp"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.instantCreditTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+		<put name="body" value="centralizedElectronicJournal.instantCreditTransactionDetailDataView.layout"/>
+		<put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+	</definition>
+	<definition name="centralizedElectronicJournal.billPayTransactionDetailDataView.layout"	extends="centralizedElectronicJournal.transactionDetailDataView.layout">
+        <put name="transactionDetailBody" value="/centralizedElectronicJournal/transactionDetails/billPayTransactionDetailView.jsp"/>
+    </definition>
+    <definition name="centralizedElectronicJournal.billPayTransactionDetailDataView" extends="centralizedElectronicJournal.transactionDetailDataGenericView">
+        <put name="body" value="centralizedElectronicJournal.billPayTransactionDetailDataView.layout"/>
+        <put name="title" value="centralizedElectronicJournal.TransactionDetailDataView.title"/>
+    </definition>
+
+    <!-- End Transaction Detail Views -->
+
+    <definition name="centralizedElectronicJournal.exportTransactionOptions" extends="ejournal">
+        <put name="helpURL" value="exportjournaldata"/>
+        <put name="body" value="/centralizedElectronicJournal/ejExportTransactionOptions.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.exportTransactionOptions.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.exportMultipleEJournalOptions" extends="ejournal">
+        <put name="helpURL" value="exportjournaldata"/>
+        <put name="body" value="/centralizedElectronicJournal/exportMultipleEJournalOptions.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.exportMultipleEJournalOptions.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.exportMultipleTransactionOptions" extends="ejournal">
+        <put name="helpURL" value="exportjournaldata"/>
+        <put name="body" value="/centralizedElectronicJournal/ejExportMultipleTransactionOptions.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.exportTransactionOptions.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.exportCustomerOptions" extends="ejournal">
+        <put name="helpURL" value="exportjournaldata"/>
+        <put name="body" value="/centralizedElectronicJournal/exportCustomerOptions.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.exportCustomerOptions.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.showCustomer" extends="ejournal">
+        <put name="helpURL" value="customerview"/>
+        <put name="body" value="/centralizedElectronicJournal/showCustomer.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.showCustomer.title"/>
+    </definition>
+
+	<definition name="centralizedElectronicJournal.showCustomerAsia" extends="ejournal">
+        <put name="helpURL" value="customerview"/>
+        <put name="body" value="/centralizedElectronicJournal/showCustomerAsia.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.showCustomer.title"/>
+    </definition>
+
+	<definition name="centralizedElectronicJournal.showCustomerWesternEurope" extends="ejournal">
+        <put name="helpURL" value="customerview"/>
+        <put name="body" value="/centralizedElectronicJournal/showCustomerWesternEurope.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.showCustomer.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.journalView" extends="ejournal">
+        <put name="helpURL" value="journalview"/>
+        <put name="body" value="/centralizedElectronicJournal/ejTransactionDetailJournalView.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.journalView.title"/>
+    </definition>
+	<!--tag added by Dharmendra on 28/11/2016 to display loyality details -->
+	<definition name="centralizedElectronicJournal.loyalityJournalView" extends="ejournal">
+        <put name="helpURL" value="journalview"/>
+        <put name="body" value="/centralizedElectronicJournal/ejLoyTransactionDetailJournalView.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.journalView.title"/>
+    </definition>
+    <definition name="centralizedElectronicJournal.journalOnlyView" extends="ejournal">
+        <put name="helpURL" value="journalview"/>
+        <put name="body" value="/centralizedElectronicJournal/ejournalDetailOnlyView.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.journalView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejExportJournalData" extends="ejournal">
+        <put name="helpURL" value="exportjournaldata"/>
+        <put name="body" value="/centralizedElectronicJournal/ejExportJournalData.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejExportJournalData.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejExportSignatureCaptureData" extends="ejournal">
+        <put name="helpURL" value="exportjournaldata"/>
+        <put name="body" value="/centralizedElectronicJournal/ejExportSignatureCaptureData.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejExportSignatureCaptureData.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejSignatureCaptureView" extends="ejournal">
+        <put name="helpURL" value="signaturecaptureview"/>
+        <put name="body" value="/centralizedElectronicJournal/ejSignatureCaptureView.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejSignatureCaptureView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejItemDetailDataView" extends="ejournal">
+        <put name="body" value="/centralizedElectronicJournal/ejItemDetailDataView.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejItemDetailDataView.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejournalSearchResults" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejournalSearch"/>
+        <put name="helpURL" value="transactionsearchresults"/>
+        <put name="body" value="/centralizedElectronicJournal/ejournalSearchResults.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejournalSearchResults.title"/>
+    </definition>
+
+    <definition name="centralizedElectronicJournal.ejTransactionSearchResults" extends="ejournal">
+        <put name="helpURL" value="transactionsearchresults"/>
+        <put name="body" value="/centralizedElectronicJournal/ejTransactionSearchResults.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejTransactionSearchResults.title"/>
+    </definition>
+
+    <!-- Keeping the sideNavIndex -->
+    <definition name="centralizedElectronicJournal.searchBySigSearchResults" extends="centralizedElectronicJournal.ejTransactionSearchResults">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.sigCapSearch"/>
+    </definition>
+    <definition name="centralizedElectronicJournal.searchByItemSearchResults" extends="centralizedElectronicJournal.ejTransactionSearchResults">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejItemSearch"/>
+    </definition>
+    <definition name="centralizedElectronicJournal.searchByCustomerSearchResults" extends="centralizedElectronicJournal.ejTransactionSearchResults">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejCustomerSearch"/>
+    </definition>
+    <definition name="centralizedElectronicJournal.searchBySalesAssociateSearchResults" extends="centralizedElectronicJournal.ejTransactionSearchResults">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejSalesAssociateSearch"/>
+    </definition>
+    <definition name="centralizedElectronicJournal.searchByTransactionSearchResults" extends="centralizedElectronicJournal.ejTransactionSearchResults">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejTransactionSearch"/>
+    </definition>
+    <!-- End keeping the sideNavIndex -->
+
+	    <definition name="centralizedElectronicJournal.ejUnsupportedTransaction" extends="ejournal">
+        <put name="sideNavIndex" value="menu.centralizedElectronicJournal.ejTransactionSearch"/>
+        <put name="body" value="/centralizedElectronicJournal/ejUnsupportedTransaction.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.ejUnsupportedTransaction.title"/>
+    </definition>
+    <!-- End Transaction Tracker (EJournal) Pages -->
+
+</tiles-definitions>

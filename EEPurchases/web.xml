@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/* ===========================================================================
+* Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved. 
+ * ===========================================================================
+ * ===========================================================================
+ * NOTES
+ * <other useful comments, qualifications, etc.>
+ *
+ * MODIFIED    (MM/DD/YY)
+ *    mchellap  02/17/12 - XbranchMerge mchellap_bug13063226-csrf-filter from
+ *                         main
+ *    ohorne    02/07/12 - SecurityCheckFilter replaced with referer-testing to
+ *                         prevent login-CSRF
+ *    tzgarba   10/13/11 - Added security filter for WebSphere to address CSRF
+ *                         issue in j_security_check
+ *    abondala  08/19/11 - remove login filter as this is handled in the custom
+ *                         login modules
+ *    abondala  08/11/11 - invalidate existing session before authenticating to
+ *                         protect from session fixation vulnerability
+ *    djenning  05/20/11 - xbranchmerge
+ *    djenning  05/18/11 - more upgrading struts
+ *    djenning  04/22/11 - remove struts tld descriptor from web.xml
+ *    hyin      04/27/11 - XbranchMerge hyin_spring_upgrade from
+ *                         rgbustores_13.4x_generic_branch
+ *    djenning  05/20/11 - XbranchMerge djenning_bug-11930476 from main
+ *    hyin      04/01/11 - use ContextLoaderListener fro spring 3
+ *    npoola    11/02/10 - removed the unused view_tenderids role
+ *    blarsen   08/23/10 - Removed card type security roles. This feature was
+ *                         removed.
+ *    cgreene   05/26/10 - convert to oracle packaging
+ *    blarsen   02/17/10 - Making all Diners Club instances consistent. They
+ *                         are all now simply Diners (no more DinersClub).
+ *    abondala  01/02/10 - Update Header date
+ *    djenning  09/14/09 - anils changes for RM,CO,BO-test
+ *    blarsen   06/09/09 - Added Scheduler ejb ref. Required to access new
+ *                         quartz-level validator for job scheduling.
+ *    abondala  06/01/09 - add missing url
+ *    mahising  12/23/08 - fix base issue
+ *    mahising  12/17/08 - Rework of base issue
+ *    mahising  11/25/08 - fixed review comments issue
+ *    mahising  11/13/08 - Added for Customer module for both ORPOS and ORCO
+ *
+ * ===========================================================================
+ */
+-->
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="WebApp_1057779061770">
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/DataImportScheduler.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>requestEncoding</param-name>
+        <param-value>UTF-8</param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>employeeComplianceFilter</filter-name>
+        <filter-class>oracle.retail.stores.webmodules.employee.ui.EmployeeComplianceFilter</filter-class>
+        <init-param>
+            <param-name>complianceVerifyRoutingAction</param-name>
+            <param-value>/verifyEmployee.do</param-value>
+        </init-param>
+        <init-param>
+            <param-name>complianceSucessRoutingAction</param-name>
+            <param-value>/index.jsp</param-value>
+        </init-param>
+    </filter>
+    
+    <filter id="filter_securitycheckfilter">
+        <filter-name>securityCheckFilter</filter-name>
+        <filter-class>oracle.retail.stores.webmodules.shared.ui.SecurityCheckFilter</filter-class>
+        <init-param>
+            <param-name>securityFailureRoutingAction</param-name>
+            <param-value>/logout.do</param-value>
+        </init-param>
+    </filter> 
+   
+    <filter-mapping id="filtermapping_securitycheckfilter">
+        <filter-name>securityCheckFilter</filter-name>
+        <url-pattern>/welcome.do</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>employeeComplianceFilter</filter-name>
+        <servlet-name>action</servlet-name>
+    </filter-mapping>
+
+    <servlet id="Servlet_1060208815103">
+        <servlet-name>QuartzInitializer</servlet-name>
+        <display-name>Quartz Initializer Servlet</display-name>
+        <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>    
+
+    <servlet id="Servlet_1057778471418">
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+        <init-param id="InitParam_1057779061785">
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/struts-config.xml</param-value>
+        </init-param>
+        <init-param id="InitParam_1057779061787">
+            <param-name>detail</param-name>
+            <param-value>2</param-value>
+        </init-param>
+        <init-param id="InitParam_1057779061788">
+            <param-name>validate</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+        <security-role-ref id="SecurityRoleRef_view_trandetail">
+            <role-name>view_trandetail</role-name>
+            <role-link>view_trandetail</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_view_sigcap">
+            <role-name>view_sigcap</role-name>
+            <role-link>view_sigcap</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_view_journalview">
+            <role-name>view_journalview</role-name>
+            <role-link>view_journalview</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_view_customerinfo">
+            <role-name>view_customerinfo</role-name>
+            <role-link>view_customerinfo</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_users_update">
+            <role-name>users_update</role-name>
+            <role-link>users_update</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_users_reset_password">
+            <role-name>users_reset_password</role-name>
+            <role-link>users_reset_password</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_users_remove">
+            <role-name>users_remove</role-name>
+            <role-link>users_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_users_add">
+            <role-name>users_add</role-name>
+            <role-link>users_add</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_users">
+            <role-name>users</role-name>
+            <role-link>users</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_settings_paramdist">
+            <role-name>settings_paramdist</role-name>
+            <role-link>settings_paramdist</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_search_by_trans">
+            <role-name>search_by_trans</role-name>
+            <role-link>search_by_trans</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_search_by_sigcap">
+            <role-name>search_by_sigcap</role-name>
+            <role-link>search_by_sigcap</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_search_by_item">
+            <role-name>search_by_item</role-name>
+            <role-link>search_by_item</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_search_by_ejournal">
+            <role-name>search_by_ejournal</role-name>
+            <role-link>search_by_ejournal</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_search_by_cust">
+            <role-name>search_by_cust</role-name>
+            <role-link>search_by_cust</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_search_by_assoc">
+            <role-name>search_by_assoc</role-name>
+            <role-link>search_by_assoc</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_scheduled_jobs_runimm">
+            <role-name>scheduled_jobs_runimm</role-name>
+            <role-link>scheduled_jobs_runimm</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_scheduled_jobs_remove">
+            <role-name>scheduled_jobs_remove</role-name>
+            <role-link>scheduled_jobs_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_scheduled_jobs">
+            <role-name>scheduled_jobs</role-name>
+            <role-link>scheduled_jobs</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_schedimp_runimm">
+            <role-name>schedimp_runimm</role-name>
+            <role-link>schedimp_runimm</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_schedimp_remove">
+            <role-name>schedimp_remove</role-name>
+            <role-link>schedimp_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_schedimp">
+            <role-name>schedimp</role-name>
+            <role-link>schedimp</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_schedexp_runimm">
+            <role-name>schedexp_runimm</role-name>
+            <role-link>schedexp_runimm</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_schedexp_remove">
+            <role-name>schedexp_remove</role-name>
+            <role-link>schedexp_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_schedexp">
+            <role-name>schedexp</role-name>
+            <role-link>schedexp</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_permissions_update">
+            <role-name>permissions_update</role-name>
+            <role-link>permissions_update</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_permissions_remove">
+            <role-name>permissions_remove</role-name>
+            <role-link>permissions_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_permissions_add">
+            <role-name>permissions_add</role-name>
+            <role-link>permissions_add</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_permissions">
+            <role-name>permissions</role-name>
+            <role-link>permissions</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_paramlist_update">
+            <role-name>paramlist_update</role-name>
+            <role-link>paramlist_update</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_paramlist_remove">
+            <role-name>paramlist_remove</role-name>
+            <role-link>paramlist_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_paramlist_distribute">
+            <role-name>paramlist_distribute</role-name>
+            <role-link>paramlist_distribute</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_paramlist_add">
+            <role-name>paramlist_add</role-name>
+            <role-link>paramlist_add</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_paramlist">
+            <role-name>paramlist</role-name>
+            <role-link>paramlist</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_import_store_hier">
+            <role-name>import_store_hier</role-name>
+            <role-link>import_store_hier</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_export_transaction">
+            <role-name>export_transaction</role-name>
+            <role-link>export_transaction</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_export_sigcap">
+            <role-name>export_sigcap</role-name>
+            <role-link>export_sigcap</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_export_journalview">
+            <role-name>export_journalview</role-name>
+            <role-link>export_journalview</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_export_custinfo">
+            <role-name>export_custinfo</role-name>
+            <role-link>export_custinfo</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_edit_store_groups">
+            <role-name>edit_store_groups</role-name>
+            <role-link>edit_store_groups</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dist_runimm">
+            <role-name>dist_runimm</role-name>
+            <role-link>dist_runimm</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dist_remove">
+            <role-name>dist_remove</role-name>
+            <role-link>dist_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dist_edit">
+            <role-name>dist_edit</role-name>
+            <role-link>dist_edit</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dist">
+            <role-name>dist</role-name>
+            <role-link>dist</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dashboard_task">
+            <role-name>dashboard_task</role-name>
+            <role-link>dashboard_task</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dashboard_remove_task">
+            <role-name>dashboard_remove_task</role-name>
+            <role-link>dashboard_remove_task</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_dashboard_add_task">
+            <role-name>dashboard_add_task</role-name>
+            <role-link>dashboard_add_task</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_availimp">
+            <role-name>availimp</role-name>
+            <role-link>availimp</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_availexp">
+            <role-name>availexp</role-name>
+            <role-link>availexp</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_administration">
+            <role-name>administration</role-name>
+            <role-link>administration</role-link>
+        </security-role-ref>
+    <security-role-ref id="SecurityRoleRef_customer">
+            <role-name>customer</role-name>
+            <role-link>customer</role-link>
+        </security-role-ref>
+    <security-role-ref id="SecurityRoleRef_customer_add">
+            <role-name>customer_add</role-name>
+            <role-link>customer_add</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_customer_remove">
+            <role-name>customer_remove</role-name>
+            <role-link>customer_remove</role-link>
+        </security-role-ref>
+        <security-role-ref id="SecurityRoleRef_customer_update">
+            <role-name>customer_update</role-name>
+            <role-link>customer_update</role-link>
+        </security-role-ref>
+    </servlet>
+
+    <servlet-mapping id="ServletMapping_1057779061785">
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+
+    <!-- Session Timeout value should not be set more than 15 minutes for the applicaton to be PCI compliant -->
+    <session-config>
+        <session-timeout>10</session-timeout>
+    </session-config>
+
+    <welcome-file-list id="WelcomeFileList_1057779061785">
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <error-page id="ErrorCodeErrorPage_1057779061785">
+        <error-code>403</error-code>
+        <location>/errors/error403.jsp</location>
+    </error-page>
+    <error-page id="ErrorPage_Code_500">
+        <error-code>500</error-code>
+        <location>/errors/error500.jsp</location>
+    </error-page>
+
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+        <taglib-location>/WEB-INF/fmt.tld</taglib-location>
+    </taglib>
+    <taglib>
+        <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+        <taglib-location>/WEB-INF/c.tld</taglib-location>
+    </taglib>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admin</web-resource-name>
+            <url-pattern>/admin/admin.do</url-pattern>
+            <url-pattern>/admin/help.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>edit_store_groups</role-name>
+            <role-name>import_store_hier</role-name>
+            <role-name>permissions</role-name>
+            <role-name>users</role-name>
+            <role-name>administration</role-name>
+            <role-name>scheduled_jobs</role-name>
+            <role-name>dashboard_task</role-name>
+            <role-name>dashboard_add_task</role-name>
+            <role-name>dashboard_remove_task</role-name>
+            <role-name>settings_paramdist</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Modify Tasks</web-resource-name>
+            <url-pattern>/admin/manageTasks.do</url-pattern>
+            <url-pattern>/admin/saveAddedTask.do</url-pattern>
+            <url-pattern>/admin/saveTask.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>dashboard_add_task</role-name>
+            <role-name>settings_paramdist</role-name>
+            <role-name>dashboard_remove_task</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>View Tasks</web-resource-name>
+            <url-pattern>/admin/showTasks.do</url-pattern>
+            <url-pattern>/admin/printTasks.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>dashboard_task</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search By Customer</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/ejCustomerSearch.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/ejCustomerSearchResults.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_cust</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search By Item</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/ejItemSearch.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/searchTransactionByItem.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_item</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search By Electronic Journals</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/ejournalSearch.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/ejournalSearchResults.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_ejournal</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search By Sales Associate</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/ejSalesAssociateSearch.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/ejSalesAssociateSearchResults.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_assoc</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/ejTransactionSearch.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/ejTransactionSearchResults.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_trans</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Export Customer Details Transaction</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/exportCustomerDetails.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>export_custinfo</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Export Transactions</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/exportEJournal.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportEJournalOptions.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportMultipleEJournalDetails.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportMultipleEJournalOptions.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportMultipleTransactionDetails.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportMultipleTransactionOptions.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportShowCustomerOptions.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportTransactionDetails.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportTransactionOptions.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>export_journalview</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Tracker Help</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/help.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_cust</role-name>
+            <role-name>search_by_item</role-name>
+            <role-name>search_by_trans</role-name>
+            <role-name>search_by_assoc</role-name>
+            <role-name>search_by_sigcap</role-name>
+            <role-name>search_by_ejournal</role-name>
+            <role-name>view_customerinfo</role-name>
+            <role-name>view_trandetail</role-name>
+            <role-name>view_sigcap</role-name>
+            <role-name>export_sigcap</role-name>
+            <role-name>export_custinfo</role-name>
+            <role-name>export_journalview</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Export Signature Capture Transaction</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/exportSignatureCapture.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/exportSignatureCaptureOptions.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>export_sigcap</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint id="SecurityConstraint_1057779061788">
+        <web-resource-collection id="WebResourceCollection_1057779061788">
+            <web-resource-name>Transaction Tracker</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/eJournal.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/searchDone.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint id="AuthConstraint_1057779061788">
+            <role-name>search_by_item</role-name>
+            <role-name>search_by_trans</role-name>
+            <role-name>search_by_assoc</role-name>
+            <role-name>search_by_cust</role-name>
+            <role-name>search_by_sigcap</role-name>
+            <role-name>search_by_ejournal</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint id="SecurityConstraint_1057779061804">
+        <web-resource-collection id="WebResourceCollection_1057779061804">
+            <web-resource-name>EJournal Show Transaction Detail</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/ejTransactionDetailDataView.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint id="AuthConstraint_1057779061805">
+            <role-name>view_trandetail</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint id="SecurityConstraint_1057779061805">
+        <web-resource-collection id="WebResourceCollection_1057779061805">
+            <web-resource-name>EJournal Show Sig Caps</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/showSigCapView.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/viewSignatureImage.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint id="AuthConstraint_1057779061806">
+            <role-name>view_sigcap</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint id="SecurityConstraint_1059165478449">
+        <web-resource-collection id="WebResourceCollection_1059165478449">
+            <web-resource-name>EJournal Show Customer Details</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/showCustomer.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint id="AuthConstraint_1059165478449">
+            <role-name>view_customerinfo</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search Results</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/showDetails.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/showEJournal.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/showOnlyEJournal.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/showLoyalityEJournal.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>view_journalview</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Transaction Search by Signatures Captured</web-resource-name>
+            <url-pattern>/centralizedElectronicJournal/sigCapSearch.do</url-pattern>
+            <url-pattern>/centralizedElectronicJournal/sigCapSearchResults.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>search_by_sigcap</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admin Parameter Maintenance</web-resource-name>
+            <url-pattern>/parameter/parameterAdminTab.do</url-pattern>
+            <url-pattern>/data/parameterMaintenance.do</url-pattern>
+            <url-pattern>/parameter/viewParameterMasterListSelectable.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Application Parameters</web-resource-name>
+            <url-pattern>/parameter/viewApplicationParameters.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>administration</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Maintenance Update</web-resource-name>
+            <url-pattern>/parameter/editParameter.do</url-pattern>
+            <url-pattern>/parameter/saveOrthogonalParameter.do</url-pattern>
+            <url-pattern>/parameter/saveTextParameter.do</url-pattern>
+            <url-pattern>/parameter/saveEnumeratedParameter.do</url-pattern>
+            <url-pattern>/parameter/saveParamSet.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist_update</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>View Users</web-resource-name>
+            <url-pattern>/security/verifyStatus.do</url-pattern>
+            <url-pattern>/users/adminUsers.do</url-pattern>
+            <url-pattern>/security/editUser.do</url-pattern>
+            <url-pattern>/users/administerUsers.do</url-pattern>
+            <url-pattern>/users/selectUserToEdit.do</url-pattern>
+            <url-pattern>/employee/employee.do</url-pattern>
+            <url-pattern>/employee/help.do</url-pattern>
+            <url-pattern>/employee/searchEmployee.do</url-pattern>
+            <url-pattern>/employee/searchEmployeeView.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Remove Users</web-resource-name>
+            <url-pattern>/users/removeUser.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Update Users</web-resource-name>
+            <url-pattern>/employee/editEmployeeChoice.do</url-pattern>
+            <url-pattern>/employee/saveEmployee.do</url-pattern>
+            <url-pattern>/employee/saveEmployeeView.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users_update</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Modify Users</web-resource-name>
+            <url-pattern>/security/dispatchEditUserChoice.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users_reset_password</role-name>
+            <role-name>users_update</role-name>
+            <role-name>users_add</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Job Manager and Data Management</web-resource-name>
+            <url-pattern>/task/retrieveActiveTaskList.do</url-pattern>
+            <url-pattern>/task/retrieveActiveTaskListManagement.do</url-pattern>
+            <url-pattern>/task/viewTaskDetails.do</url-pattern>
+            <url-pattern>/task/chooseDestination.do</url-pattern>
+            <url-pattern>/task/jobs/scheduleJob.do</url-pattern>
+            <url-pattern>/task/jobs/editSchedule.do</url-pattern>
+            <url-pattern>/task/notifications/addTaskNotificationRecipient.do</url-pattern>
+            <url-pattern>/task/notifications/editTaskNotification.do</url-pattern>
+            <url-pattern>/task/submitTask.do</url-pattern>
+            <url-pattern>/task/submitTaskDone.do</url-pattern>
+            <url-pattern>/task/addImportFile.do</url-pattern>
+            <url-pattern>/task/createImportFile.do</url-pattern>
+            <url-pattern>/task/scheduledExportsManagement.do</url-pattern>
+            <url-pattern>/task/confirmExportTaskRemoval.do</url-pattern>
+            <url-pattern>/task/createFileSet.do</url-pattern>
+            <url-pattern>/task/distributeFileSet.do</url-pattern>
+            <url-pattern>/task/addFileAction.do</url-pattern>
+            <url-pattern>/task/deleteFileAction.do</url-pattern>
+            <url-pattern>/task/completeReview.do</url-pattern>
+            <url-pattern>/task/viewTask.do</url-pattern>
+            <url-pattern>/task/confirmTaskRemoval.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>scheduled_jobs</role-name>
+            <role-name>availimp</role-name>
+            <role-name>schedimp</role-name>
+            <role-name>availexp</role-name>
+            <role-name>schedexp</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Roles</web-resource-name>
+            <url-pattern>/employee/retrieveGroups.do</url-pattern>
+            <url-pattern>/employee/viewGroups.do</url-pattern>
+            <url-pattern>/employee/editGroup.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>permissions</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Roles</web-resource-name>
+            <url-pattern>/employee/savePermissions.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>permissions_update</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Remove Roles</web-resource-name>
+            <url-pattern>/employee/confirmGroupsRemoval.do</url-pattern>
+            <url-pattern>/employee/removeGroups.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>permissions_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Add Roles</web-resource-name>
+            <url-pattern>/employee/addGroup.do</url-pattern>
+            <url-pattern>/employee/getNewGroupName.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>permissions_add</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Home</web-resource-name>
+            <url-pattern>/security/resetPassword.do</url-pattern>
+            <url-pattern>/employee/resetEmployeePassword.do</url-pattern>
+            <url-pattern>/employee/resetTempEmployeePassword.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users_reset_password</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>User Add</web-resource-name>
+            <url-pattern>/security/saveUser.do</url-pattern>
+            <url-pattern>/security/searchForDuplicate.do</url-pattern>
+            <url-pattern>/users/setupUser.do</url-pattern>
+            <url-pattern>/employee/addEmployee.do</url-pattern>
+            <url-pattern>/employee/addEmployeeView.do</url-pattern>
+            <url-pattern>/employee/addTempEmployee.do</url-pattern>
+            <url-pattern>/employee/addTempEmployeeView.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users_add</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Store Directory</web-resource-name>
+            <url-pattern>/storeDirectory/addRemoveStoreGroups.do</url-pattern>
+            <url-pattern>/storeDirectory/editStoreGroup.do</url-pattern>
+            <url-pattern>/storeDirectory/viewStoreGroup.do</url-pattern>
+            <url-pattern>/storeDirectory/viewStoreGroups.do</url-pattern>
+            <url-pattern>/storeDirectory/RemoveGroups.do</url-pattern>
+            <url-pattern>/task/retrieveStoreGroups.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>edit_store_groups</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Data Management</web-resource-name>
+            <url-pattern>/task/dataTab.do</url-pattern>
+            <url-pattern>/data/help.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>availimp</role-name>
+            <role-name>schedimp</role-name>
+            <role-name>availexp</role-name>
+            <role-name>schedexp</role-name>
+            <role-name>paramlist</role-name>
+            <role-name>dist</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Maintenance</web-resource-name>
+            <url-pattern>/parameter/parameterTab.do</url-pattern>
+            <url-pattern>/parameter/viewScheduledDistributions.do</url-pattern>
+            <url-pattern>/parameter/paramSetActions.do</url-pattern>
+            <url-pattern>/parameter/confirmParameterListRemoval.do</url-pattern>
+            <url-pattern>/parameter/viewParameterCatalog.do</url-pattern>
+            <url-pattern>/parameter/viewParameterSet.do</url-pattern>
+            <url-pattern>/parameter/masterParamSetActions.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist</role-name>
+            <role-name>dist</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Distribution</web-resource-name>
+            <url-pattern>/data/createTask.do</url-pattern>
+            <url-pattern>/task/confirmDistribution.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>dist</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Distribution Removal</web-resource-name>
+            <url-pattern>/data/confirmParameterTaskRemoval.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>dist_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Distribution</web-resource-name>
+            <url-pattern>/data/distributeParameterSet.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist_distribute</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Scheduled Job Properties</web-resource-name>
+            <url-pattern>/data/scheduledJobProperties.do</url-pattern>
+            <url-pattern>/task/jobs/displaySchedule.do</url-pattern>
+            <url-pattern>/task/listDestinations.do</url-pattern>
+            <url-pattern>/task/retrieveDestinations.do</url-pattern>
+            <url-pattern>/task/viewAlertTask.do</url-pattern>
+            <url-pattern>/task/viewFileSet.do</url-pattern>
+            <url-pattern>/task/viewReviewTask.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>scheduled_jobs</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Maintenance</web-resource-name>
+            <url-pattern>/parameter/paramCatActions.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist_add</role-name>
+            <role-name>paramlist_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Maintenance</web-resource-name>
+            <url-pattern>/parameter/createParameterSet.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist_add</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Parameter Maintenance</web-resource-name>
+            <url-pattern>/parameter/removeParameterSet.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>paramlist_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Scheduled Imports</web-resource-name>
+            <url-pattern>/task/scheduledImports.do</url-pattern>
+            <url-pattern>/task/scheduledImportsManagement.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>schedimp</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Scheduled Imports</web-resource-name>
+            <url-pattern>/task/confirmImportTaskRemoval.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>schedimp_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Scheduled Exports</web-resource-name>
+            <url-pattern>/task/scheduledExports.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>schedexp</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Available Exports</web-resource-name>
+            <url-pattern>/task/exportsAvailable.do</url-pattern>
+            <url-pattern>/task/createImportFileTask.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>availexp</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Available Imports</web-resource-name>
+            <url-pattern>/task/importsAvailable.do</url-pattern>
+            <url-pattern>/task/chooseFile.do</url-pattern>
+            <url-pattern>/task/displayNotificationSelection.do</url-pattern>
+            <url-pattern>/task/editTaskNotification.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>availimp</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Customer Utility</web-resource-name>
+            <url-pattern>/customer/customerRequestHandler.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>customer</role-name>
+        <role-name>customer_add</role-name>
+        <role-name>customer_update</role-name>
+        <role-name>customer_remove</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+     <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Customer Search</web-resource-name>
+            <url-pattern>/customer/customerSearchCriteria.do</url-pattern>
+            <url-pattern>/customer/searchCustomer.do</url-pattern>
+            <url-pattern>/customer/viewCustomerDetails.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>customer</role-name>
+            <role-name>customer_remove</role-name>
+            <role-name>customer_update</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Customer Add </web-resource-name>
+            <url-pattern>/customer/addCustomerInfo.do</url-pattern>
+            <url-pattern>/customer/addCustomer.do</url-pattern>
+            <url-pattern>/customer/dupSearchAddCustomer.do</url-pattern>
+            <url-pattern>/customer/viewCustomerDetails.do</url-pattern>
+            <url-pattern>/customer/editIndividualCustomer.do</url-pattern>
+            <url-pattern>/customer/editBusinessCustomer.do</url-pattern>
+            <url-pattern>/customer/updateCustomer.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>customer_add</role-name>
+      </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+       <web-resource-name>Customer delete</web-resource-name>
+            <url-pattern>/customer/confirmDeleteCustomer.do</url-pattern>
+             <url-pattern>/customer/deleteCustomer.do</url-pattern>
+       </web-resource-collection>
+        <auth-constraint>
+            <role-name>customer_remove</role-name>
+         </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+       <web-resource-name>Customer Update and Add</web-resource-name>
+            <url-pattern>/customer/editIndividualCustomer.do</url-pattern>
+            <url-pattern>/customer/editBusinessCustomer.do</url-pattern>
+            <url-pattern>/customer/updateCustomer.do</url-pattern>
+       </web-resource-collection>
+        <auth-constraint>
+            <role-name>customer_update</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint id="SecurityConstraint_1057779061787">
+        <web-resource-collection id="WebResourceCollection_1058845235826">
+            <web-resource-name>Central Office Login</web-resource-name>
+            <url-pattern>/dashboard/*</url-pattern>
+            <url-pattern>/shared/*</url-pattern>
+            <url-pattern>/employee/changePassword.do</url-pattern>
+            <url-pattern>/employee/voluntaryChangePassword.do</url-pattern>
+            <url-pattern>/employee/passwordChangeSuccessful.do</url-pattern>
+            <url-pattern>/voluntaryChangePassword.do</url-pattern>
+            <url-pattern>/verifyEmployee.do</url-pattern>
+            <url-pattern>/welcome.do</url-pattern>
+            <url-pattern>/viewHierarchy.do</url-pattern>
+            <url-pattern>/login.do</url-pattern>
+            <url-pattern>/logout.do</url-pattern>
+            <url-pattern>/security.do</url-pattern>
+        </web-resource-collection>
+        <auth-constraint id="AuthConstraint_1057779061787">
+            <role-name>view_trandetail</role-name>
+            <role-name>view_sigcap</role-name>
+            <role-name>view_journalview</role-name>
+            <role-name>view_customerinfo</role-name>
+            <role-name>users_update</role-name>
+            <role-name>users_reset_password</role-name>
+            <role-name>users_remove</role-name>
+            <role-name>users_add</role-name>
+            <role-name>users</role-name>
+            <role-name>settings_paramdist</role-name>
+            <role-name>search_by_trans</role-name>
+            <role-name>search_by_sigcap</role-name>
+            <role-name>search_by_item</role-name>
+            <role-name>search_by_ejournal</role-name>
+            <role-name>search_by_cust</role-name>
+            <role-name>search_by_assoc</role-name>
+            <role-name>scheduled_jobs_runimm</role-name>
+            <role-name>scheduled_jobs_remove</role-name>
+            <role-name>scheduled_jobs</role-name>
+            <role-name>schedimp_runimm</role-name>
+            <role-name>schedimp_remove</role-name>
+            <role-name>schedimp</role-name>
+            <role-name>schedexp_runimm</role-name>
+            <role-name>schedexp_remove</role-name>
+            <role-name>schedexp</role-name>
+            <role-name>permissions_update</role-name>
+            <role-name>permissions_remove</role-name>
+            <role-name>permissions_add</role-name>
+            <role-name>permissions</role-name>
+            <role-name>paramlist_update</role-name>
+            <role-name>paramlist_remove</role-name>
+            <role-name>paramlist_distribute</role-name>
+            <role-name>paramlist_add</role-name>
+            <role-name>paramlist</role-name>
+            <role-name>import_store_hier</role-name>
+            <role-name>export_transaction</role-name>
+            <role-name>export_sigcap</role-name>
+            <role-name>export_journalview</role-name>
+            <role-name>export_custinfo</role-name>
+            <role-name>edit_store_groups</role-name>
+            <role-name>dist_runimm</role-name>
+            <role-name>dist_remove</role-name>
+            <role-name>dist_edit</role-name>
+            <role-name>dist</role-name>
+            <role-name>dashboard_task</role-name>
+            <role-name>dashboard_remove_task</role-name>
+            <role-name>dashboard_add_task</role-name>
+            <role-name>availimp</role-name>
+            <role-name>availexp</role-name>
+            <role-name>administration</role-name>
+            <role-name>customer</role-name>
+            <role-name>customer_add</role-name>
+            <role-name>customer_remove</role-name>
+            <role-name>customer_update</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <login-config id="LoginConfig_1057779061801">
+        <auth-method>FORM</auth-method>
+        <form-login-config id="FormLoginConfig_1057779061801">
+            <form-login-page>/login.do</form-login-page>
+            <form-error-page>/loginError.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role id="SecurityRole_administration">
+        <description>The role required for access to application parameters.</description>
+        <role-name>administration</role-name>
+    </security-role>
+    <security-role id="SecurityRole_view_trandetail">
+        <role-name>view_trandetail</role-name>
+    </security-role>
+    <security-role id="SecurityRole_view_sigcap">
+        <role-name>view_sigcap</role-name>
+    </security-role>
+    <security-role id="SecurityRole_view_journalview">
+        <role-name>view_journalview</role-name>
+    </security-role>
+    <security-role id="SecurityRole_view_customerinfo">
+        <role-name>view_customerinfo</role-name>
+    </security-role>
+    <security-role id="SecurityRole_users_update">
+        <role-name>users_update</role-name>
+    </security-role>
+    <security-role id="SecurityRole_users_reset_password">
+        <role-name>users_reset_password</role-name>
+    </security-role>
+    <security-role id="SecurityRole_users_remove">
+        <role-name>users_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_users_add">
+        <role-name>users_add</role-name>
+    </security-role>
+    <security-role id="SecurityRole_users">
+        <role-name>users</role-name>
+    </security-role>
+    <security-role id="SecurityRole_settings_paramdist">
+        <role-name>settings_paramdist</role-name>
+    </security-role>
+    <security-role id="SecurityRole_search_by_trans">
+        <role-name>search_by_trans</role-name>
+    </security-role>
+    <security-role id="SecurityRole_search_by_sigcap">
+        <role-name>search_by_sigcap</role-name>
+    </security-role>
+    <security-role id="SecurityRole_search_by_item">
+        <role-name>search_by_item</role-name>
+    </security-role>
+    <security-role id="SecurityRole_search_by_ejournal">
+        <role-name>search_by_ejournal</role-name>
+    </security-role>
+    <security-role id="SecurityRole_search_by_cust">
+        <role-name>search_by_cust</role-name>
+    </security-role>
+    <security-role id="SecurityRole_search_by_assoc">
+        <role-name>search_by_assoc</role-name>
+    </security-role>
+    <security-role id="SecurityRole_scheduled_jobs_runimm">
+        <role-name>scheduled_jobs_runimm</role-name>
+    </security-role>
+    <security-role id="SecurityRole_scheduled_jobs_remove">
+        <role-name>scheduled_jobs_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_scheduled_jobs">
+        <role-name>scheduled_jobs</role-name>
+    </security-role>
+    <security-role id="SecurityRole_schedimp_runimm">
+        <role-name>schedimp_runimm</role-name>
+    </security-role>
+    <security-role id="SecurityRole_schedimp_remove">
+        <role-name>schedimp_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_schedimp">
+        <role-name>schedimp</role-name>
+    </security-role>
+    <security-role id="SecurityRole_schedexp_runimm">
+        <role-name>schedexp_runimm</role-name>
+    </security-role>
+    <security-role id="SecurityRole_schedexp_remove">
+        <role-name>schedexp_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_schedexp">
+        <role-name>schedexp</role-name>
+    </security-role>
+    <security-role id="SecurityRole_permissions_update">
+        <role-name>permissions_update</role-name>
+    </security-role>
+    <security-role id="SecurityRole_permissions_remove">
+        <role-name>permissions_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_permissions_add">
+        <role-name>permissions_add</role-name>
+    </security-role>
+    <security-role id="SecurityRole_permissions">
+        <role-name>permissions</role-name>
+    </security-role>
+    <security-role id="SecurityRole_paramlist_update">
+        <role-name>paramlist_update</role-name>
+    </security-role>
+    <security-role id="SecurityRole_paramlist_remove">
+        <role-name>paramlist_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_paramlist_distribute">
+        <role-name>paramlist_distribute</role-name>
+    </security-role>
+    <security-role id="SecurityRole_paramlist_add">
+        <role-name>paramlist_add</role-name>
+    </security-role>
+    <security-role id="SecurityRole_paramlist">
+        <role-name>paramlist</role-name>
+    </security-role>
+    <security-role id="SecurityRole_import_store_hier">
+        <role-name>import_store_hier</role-name>
+    </security-role>
+    <security-role id="SecurityRole_export_transaction">
+        <role-name>export_transaction</role-name>
+    </security-role>
+    <security-role id="SecurityRole_export_sigcap">
+        <role-name>export_sigcap</role-name>
+    </security-role>
+    <security-role id="SecurityRole_export_journalview">
+        <role-name>export_journalview</role-name>
+    </security-role>
+    <security-role id="SecurityRole_export_custinfo">
+        <role-name>export_custinfo</role-name>
+    </security-role>
+    <security-role id="SecurityRole_edit_store_groups">
+        <role-name>edit_store_groups</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dist_runimm">
+        <role-name>dist_runimm</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dist_remove">
+        <role-name>dist_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dist_edit">
+        <role-name>dist_edit</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dist">
+        <role-name>dist</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dashboard_task">
+        <role-name>dashboard_task</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dashboard_remove_task">
+        <role-name>dashboard_remove_task</role-name>
+    </security-role>
+    <security-role id="SecurityRole_dashboard_add_task">
+        <role-name>dashboard_add_task</role-name>
+    </security-role>
+    <security-role id="SecurityRole_availimp">
+        <role-name>availimp</role-name>
+    </security-role>
+    <security-role id="SecurityRole_availexp">
+        <role-name>availexp</role-name>
+    </security-role>
+    <security-role id="SecurityRole_customer">
+        <role-name>customer</role-name>
+    </security-role>
+    <security-role id="SecurityRole_customer_add">
+        <role-name>customer_add</role-name>
+    </security-role>
+    <security-role id="SecurityRole_customer_remove">
+        <role-name>customer_remove</role-name>
+    </security-role>
+    <security-role id="SecurityRole_customer_update">
+        <role-name>customer_update</role-name>
+    </security-role>
+    <env-entry id="DashboardEnabled">
+        <env-entry-name>dashboardEnabled</env-entry-name>
+        <env-entry-value>true</env-entry-value>
+        <env-entry-type>java.lang.Boolean</env-entry-type>
+    </env-entry>
+
+    <ejb-ref id="EjbRef_CurrencyService">
+        <ejb-ref-name>ejb/CurrencyService</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.commerceservices.currency.ejb.CurrencyServiceHome</home>
+        <remote>oracle.retail.stores.commerceservices.currency.ejb.CurrencyServiceRemote</remote>
+        <ejb-link>CurrencyServiceSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_ReportManager">
+        <ejb-ref-name>ejb/ReportManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.report.app.ejb.ReportManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.report.app.ejb.ReportManagerRemote</remote>
+        <ejb-link>ReportManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_EmployeeServiceSB">
+        <ejb-ref-name>ejb/EmployeeService</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.commerceservices.employee.ejb.EmployeeServiceHome</home>
+        <remote>oracle.retail.stores.commerceservices.employee.ejb.EmployeeServiceRemote</remote>
+        <ejb-link>EmployeeServiceSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_EmployeeManagerSB">
+        <ejb-ref-name>ejb/EmployeeManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.employee.app.ejb.EmployeeManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.employee.app.ejb.EmployeeManagerRemote</remote>
+        <ejb-link>EmployeeManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_StoreManagerSB">
+        <ejb-ref-name>ejb/StoreManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.store.app.ejb.StoreManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.store.app.ejb.StoreManagerRemote</remote>
+        <ejb-link>StoreManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_1057779061805">
+        <ejb-ref-name>ejb/AdminManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.admin.app.ejb.AdminManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.admin.app.ejb.AdminManagerRemote</remote>
+        <ejb-link>AdminManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_TaskManagerSB">
+        <ejb-ref-name>ejb/TaskManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.task.app.ejb.TaskManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.task.app.ejb.TaskManagerRemote</remote>
+        <ejb-link>TaskManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_1057779061801">
+        <ejb-ref-name>ejb/EJournalManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.transaction.app.ejb.EJournalManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.transaction.app.ejb.EJournalManagerRemote</remote>
+        <ejb-link>EJournalManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_1057779061802">
+        <ejb-ref-name>ejb/DashboardManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.dashboard.app.ejb.DashboardManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.dashboard.app.ejb.DashboardManagerRemote</remote>
+        <ejb-link>DashboardManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EjbRef_1057779061803">
+        <ejb-ref-name>ejb/DataManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.parameter.app.ejb.DataManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.parameter.app.ejb.DataManagerRemote</remote>
+        <ejb-link>DataManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EJbRef_StoreDirectorySB">
+        <ejb-ref-name>ejb/StoreDirectorySB</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.commerceservices.storedirectory.ejb.StoreDirectoryHome</home>
+        <remote>oracle.retail.stores.commerceservices.storedirectory.ejb.StoreDirectoryRemote</remote>
+        <ejb-link>StoreDirectorySB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EJbRef_CustomerManagerSB">
+        <ejb-ref-name>ejb/CustomerManager</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.webmodules.customer.app.ejb.CustomerManagerHome</home>
+        <remote>oracle.retail.stores.webmodules.customer.app.ejb.CustomerManagerRemote</remote>
+        <ejb-link>CustomerManagerSB</ejb-link>
+    </ejb-ref>
+    <ejb-ref id="EJbRef_SchedulerSB">
+        <ejb-ref-name>ejb/Scheduler</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <home>oracle.retail.stores.foundation.scheduler.ejb.SchedulerHome</home>
+        <remote>oracle.retail.stores.foundation.scheduler.ejb.SchedulerRemote</remote>
+        <ejb-link>SchedulerSB</ejb-link>
+    </ejb-ref>
+</web-app>
