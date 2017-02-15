@@ -571,6 +571,7 @@
 package oracle.retail.stores.commerceservices.transaction.ejb;
 
 import gdyn.retail.stores.commerceservices.transaction.GDYNCOLoyalitConstants;
+import gdyn.retail.stores.webmodules.ejournal.GDYNLoyalityEJournalViewBean;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -819,7 +820,6 @@ import oracle.retail.stores.persistence.store.RetailStore;
 import oracle.retail.stores.persistence.utility.ARTSDatabaseIfc;
 import oracle.retail.stores.persistence.utility.BasicDBUtils;
 import oracle.retail.stores.persistence.utility.DAOFactoryIfc;
-import oracle.retail.stores.webmodules.ejournal.LoyalityEJournalViewBean;
 import oracle.retail.stores.xmlreplication.ExtractorObjectFactoryIfc;
 import oracle.retail.stores.xmlreplication.ImporterObjectFactoryIfc;
 import oracle.retail.stores.xmlreplication.ReplicationObjectFactoryContainer;
@@ -7300,7 +7300,7 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
   	 * @throws ParseException
   	 * @throws RemoteException
   	 */
-    public LoyalityEJournalViewBean getLoyalityDtls(String filteredTransactionNumber,String loyalityId,String businessDate) throws java.rmi.RemoteException{
+    public GDYNLoyalityEJournalViewBean getLoyalityDtls(String filteredTransactionNumber,String loyalityId,String businessDate) throws java.rmi.RemoteException{
     	
     	// String query = "SELECT A.ID_STR_RT ID_STR_RT ,A.ID_WS AS ID_WS, A.AI_TRN AS AI_TRN, A.DC_DY_BSN AS DC_DY_BSN, A.TY_TRN AS TY_TRN, A.TS_TRN_END  AS TS_TRN_END, B.CD_CNY_ISO AS CO_TRN_CNY  FROM(SELECT DISTINCT A.ID_STR_RT AS ID_STR_RT, A.ID_WS AS ID_WS, A.AI_TRN AS AI_TRN, A.DC_DY_BSN AS DC_DY_BSN, A.TY_TRN AS TY_TRN, A.TS_TRN_END AS TS_TRN_END FROM TR_TRN  A, ct_trn_lylt B where A.ID_STR_RT=B.ID_STR_RT  AND  A.ID_WS=B.ID_WS AND  A.AI_TRN=B.AI_TRN AND  A.DC_DY_BSN=B.DC_DY_BSN AND  A.ID_STR_RT=B.ID_STR_RT AND  B.LYLT_ID= '6666666666') A INNER JOIN (SELECT * FROM TR_RTL ) B ON A.ID_STR_RT=B.ID_STR_RT AND  A.ID_WS=B.ID_WS AND  A.AI_TRN=B.AI_TRN AND  A.DC_DY_BSN=B.DC_DY_BSN AND  A.ID_STR_RT=B.ID_STR_RT";
     	logger.info("inside getLoyalityDtls method of TransactionServiceBean" +filteredTransactionNumber +" : loyalityId "+loyalityId+" : businessDate "+businessDate);
@@ -7314,7 +7314,7 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
 		logger.warn("storeId "+storeId+" workStationId "+workStationId +" transSeqNo "+transSeqNo);
 
 		String query = "select ai_trn,id_str_rt,id_ws,dc_dy_bsn,id_chnl_sls,lylt_id,lylt_eml  from ct_trn_lylt where id_str_rt = ? and id_ws = ? and DC_DY_BSN = ? and ai_trn = ? ";
-		LoyalityEJournalViewBean loyalityEjournalViewBean = new LoyalityEJournalViewBean();
+		GDYNLoyalityEJournalViewBean loyalityEjournalViewBean = new GDYNLoyalityEJournalViewBean();
 		int count = 0;
 		Connection connection = null;
 		PreparedStatement pstmt = null;

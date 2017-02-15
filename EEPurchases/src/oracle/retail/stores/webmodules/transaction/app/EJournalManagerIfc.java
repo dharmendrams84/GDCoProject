@@ -156,6 +156,8 @@
  */
 
 package oracle.retail.stores.webmodules.transaction.app;
+import gdyn.retail.stores.webmodules.ejournal.GDYNLoyalityEJournalViewBean;
+
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -178,7 +180,7 @@ import oracle.retail.stores.commerceservices.transaction.TransactionDTO;
 import oracle.retail.stores.commerceservices.transaction.TransactionKeyFormatterIfc;
 import oracle.retail.stores.utility.PagedList;
 import oracle.retail.stores.webmodules.ejournal.EJournalViewBean;
-import oracle.retail.stores.webmodules.ejournal.LoyalityEJournalViewBean;
+
 
 /**  EJournal Manager is a Session Facade into that exposes all the functionality needed to display
  * on the UI on the EJournal tab.  It wraps a number of methods exposed in the commerce services framework
@@ -209,7 +211,7 @@ public interface EJournalManagerIfc
 	 * @throws ParseException
 	 * @throws RemoteException
 	 */
-	LoyalityEJournalViewBean retrieveLoyalityEJournal(String filteredTransactionNumber,String transactionKey,String businessDate) throws ParseException,RemoteException;
+	GDYNLoyalityEJournalViewBean retrieveLoyalityEJournal(String filteredTransactionNumber,String transactionKey,String businessDate) throws ParseException,RemoteException;
 	
     /** gets a view dto containing the ejournal text for the specified transaction
      *

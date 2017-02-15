@@ -3,13 +3,15 @@ package gdyn.retail.stores.webmodules.transaction.ui;
 
 
 
+import gdyn.retail.stores.webmodules.ejournal.GDYNLoyalityEJournalViewBean;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import oracle.retail.stores.commerceservices.transaction.SearchCriteria;
 import oracle.retail.stores.commerceservices.transaction.TransactionCriteria;
 import oracle.retail.stores.foundation.common.ServiceLocator;
-import oracle.retail.stores.webmodules.ejournal.LoyalityEJournalViewBean;
+
 import oracle.retail.stores.webmodules.transaction.app.ejb.EJournalManagerHome;
 import oracle.retail.stores.webmodules.transaction.app.ejb.EJournalManagerRemote;
 import oracle.retail.stores.webmodules.transaction.ui.EJournalKeyForm;
@@ -79,7 +81,7 @@ public final class GDYNShowLoyalityEJournalAction extends Action
       //  logger.debug("tranNumber: " + filteredTransactionNumber + ", date: " + filteredBusinessDate);
         EJournalManagerRemote eJournalManager = (EJournalManagerRemote) ServiceLocator.getInstance().getRemoteService(
                 "java:comp/env/ejb/EJournalManager", EJournalManagerHome.class);
-        LoyalityEJournalViewBean loyalityEJournalViewBean = new LoyalityEJournalViewBean();
+        GDYNLoyalityEJournalViewBean loyalityEJournalViewBean = new GDYNLoyalityEJournalViewBean();
         try
         {
            

@@ -118,7 +118,7 @@
 </action>
 <!--action tag added by Dharmendra on 28/11/2016 to search by loyality id -->
 <action path="/centralizedElectronicJournal/showLoyalityEJournal"
-	type="oracle.retail.stores.webmodules.transaction.ui.ShowLoyalityEJournalAction"
+	type="gdyn.retail.stores.webmodules.transaction.ui.GDYNShowLoyalityEJournalAction"
 	name="ejournalKeyForm"
 	scope="request"
 	input="/centralizedElectronicJournal/searchDone.do">
@@ -126,7 +126,7 @@
 </action>
 <!--action tag added by Dharmendra on 28/11/2016 to update loyality details -->
 <action path="/centralizedElectronicJournal/updateLoyalityEJournal"
-	type="oracle.retail.stores.webmodules.transaction.ui.UpdateLoyalityEJournalAction"
+	type="gdyn.retail.stores.webmodules.transaction.ui.GDYNUpdateLoyalityEJournalAction"
 	name="loyalityTransactionForm"
 	scope="request"
 	input="/centralizedElectronicJournal/searchDone.do">

@@ -452,7 +452,7 @@
 	<!--tag added by Dharmendra on 28/11/2016 to display loyality details -->
 	<definition name="centralizedElectronicJournal.loyalityJournalView" extends="ejournal">
         <put name="helpURL" value="journalview"/>
-        <put name="body" value="/centralizedElectronicJournal/ejLoyTransactionDetailJournalView.jsp"/>
+        <put name="body" value="/centralizedElectronicJournal/gdyn_ejLoyTransactionDetailJournalView.jsp"/>
         <put name="title" value="centralizedElectronicJournal.journalView.title"/>
     </definition>
     <definition name="centralizedElectronicJournal.journalOnlyView" extends="ejournal">

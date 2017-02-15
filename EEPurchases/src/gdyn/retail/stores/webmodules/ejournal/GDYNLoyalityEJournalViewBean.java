@@ -1,5 +1,5 @@
 /*new class created by Dharmendra on 28/11/2016 to hold different values fetched for a transaction in CT_TRN_LYLT table*/
-package oracle.retail.stores.webmodules.ejournal;
+package gdyn.retail.stores.webmodules.ejournal;
 
 import java.io.Serializable;
 
@@ -8,11 +8,12 @@ import org.apache.log4j.Logger;
 /**
  * @version $Revision: /rgbustores_13.4x_generic_branch/1 $
  */
-public class LoyalityEJournalViewBean implements Serializable
+public class GDYNLoyalityEJournalViewBean implements Serializable
+
 {
 	private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(LoyalityEJournalViewBean.class); //constant
+    private static final Logger logger = Logger.getLogger(GDYNLoyalityEJournalViewBean.class); //constant
 
     private String storeNumber;
     

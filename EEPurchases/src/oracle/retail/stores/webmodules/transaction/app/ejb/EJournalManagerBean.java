@@ -95,6 +95,8 @@
  */
 package oracle.retail.stores.webmodules.transaction.app.ejb;
 
+import gdyn.retail.stores.webmodules.ejournal.GDYNLoyalityEJournalViewBean;
+
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.ParseException;
@@ -168,7 +170,7 @@ import oracle.retail.stores.common.utility.LocaleRequestor;
 import oracle.retail.stores.foundation.common.SessionBeanAdapter;
 import oracle.retail.stores.utility.PagedList;
 import oracle.retail.stores.webmodules.ejournal.EJournalViewBean;
-import oracle.retail.stores.webmodules.ejournal.LoyalityEJournalViewBean;
+
 import oracle.retail.stores.webmodules.transaction.app.EJournalListViewDTO;
 import oracle.retail.stores.webmodules.transaction.app.EJournalManagerIfc;
 import oracle.retail.stores.webmodules.transaction.app.InclusiveTaxTotalViewDTO;
@@ -1405,12 +1407,12 @@ public class EJournalManagerBean extends SessionBeanAdapter implements EJournalM
 	 * @throws RemoteException
 	 */
     
-    public LoyalityEJournalViewBean retrieveLoyalityEJournal(String filteredTransactionNumber,String loyalityId,String businessDate)
+    public GDYNLoyalityEJournalViewBean retrieveLoyalityEJournal(String filteredTransactionNumber,String loyalityId,String businessDate)
     {	
     	getLogger().debug("inside retrieveLoyalityEJournal filteredTransactionNumber "+filteredTransactionNumber+" loyalityId "+loyalityId+" businessDate "+businessDate);
     	getLogger().info("inside retrieveLoyalityEJournal filteredTransactionNumber "+filteredTransactionNumber+" loyalityId "+loyalityId+" businessDate "+businessDate);
     	getLogger().warn("inside retrieveLoyalityEJournal filteredTransactionNumber "+filteredTransactionNumber+" loyalityId "+loyalityId+" businessDate "+businessDate);
-    	LoyalityEJournalViewBean loyalityEJournalViewBean =	new LoyalityEJournalViewBean();
+    	GDYNLoyalityEJournalViewBean loyalityEJournalViewBean =	new GDYNLoyalityEJournalViewBean();
         try
         {
         	loyalityEJournalViewBean =	 getTransactionService().getLoyalityDtls(filteredTransactionNumber,loyalityId,businessDate);

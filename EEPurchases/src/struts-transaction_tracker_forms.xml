@@ -20,5 +20,5 @@
 <form-bean name="ejournalKeyForm" type="oracle.retail.stores.webmodules.transaction.ui.EJournalKeyForm"/>
 <form-bean name="viewSignatureImageForm" type="oracle.retail.stores.webmodules.transaction.ui.ViewSignatureImageForm"/>
 <!--form bean entry added by Dharmendra on 25/11/2016  -->
-<form-bean name="loyalityTransactionForm" type="oracle.retail.stores.webmodules.transaction.ui.LoyalityTransactionForm"/>
+<form-bean name="loyalityTransactionForm" type="gdyn.retail.stores.webmodules.transaction.ui.GDYNLoyalityTransactionForm"/>
 

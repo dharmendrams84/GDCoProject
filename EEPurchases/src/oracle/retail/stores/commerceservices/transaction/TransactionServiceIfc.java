@@ -188,6 +188,8 @@
  */
 package oracle.retail.stores.commerceservices.transaction;
 
+import gdyn.retail.stores.webmodules.ejournal.GDYNLoyalityEJournalViewBean;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
@@ -203,7 +205,7 @@ import oracle.retail.stores.commerceservices.ejournal.EJournalKey;
 import oracle.retail.stores.commerceservices.store.WorkstationIfc;
 import oracle.retail.stores.commerceservices.storedirectory.StoreSelectionCriteria;
 import oracle.retail.stores.keystoreencryption.EncryptionServiceException;
-import oracle.retail.stores.webmodules.ejournal.LoyalityEJournalViewBean;
+
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -615,7 +617,7 @@ public interface TransactionServiceIfc
   	 * @throws ParseException
   	 * @throws RemoteException
   	 */
-    public LoyalityEJournalViewBean getLoyalityDtls(String filteredTransactionNumber, String loyalityId,String businessDate)throws RemoteException;
+    public GDYNLoyalityEJournalViewBean getLoyalityDtls(String filteredTransactionNumber, String loyalityId,String businessDate)throws RemoteException;
     
     /**
    	 *This method is created by Dharmendra on 28/11/2016 to update loyality details in table CT_TRN_LYLT table based on the below parameters
