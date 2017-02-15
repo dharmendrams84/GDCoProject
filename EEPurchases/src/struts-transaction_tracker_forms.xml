@@ -1,0 +1,24 @@
+<!--
+/* ===========================================================================
+* Copyright (c) 2008, 2011, Oracle and/or its affiliates. All rights reserved. 
+ * ===========================================================================
+ * $Header: rgbustores/webapp/transaction-webapp/WEB-INF/360/struts-transaction_tracker_forms.xml /rgbustores_13.4x_generic_branch/1 2011/05/06 12:32:10 mszekely Exp $
+ * ===========================================================================
+ * NOTES
+ * <other useful comments, qualifications, etc.>
+ *
+ * MODIFIED    (MM/DD/YY)
+ *    cgreene   05/26/10 - convert to oracle packaging
+ *    abondala  01/02/10 - Update Header date
+ *
+ * ===========================================================================
+ */
+-->
+<form-bean name="exportEJournalForm" type="oracle.retail.stores.webmodules.transaction.ui.ExportEJournalForm"/>
+<form-bean name="searchTransactionForm" type="oracle.retail.stores.webmodules.transaction.ui.SearchTransactionForm"/>
+<form-bean name="transactionKeyForm" type="oracle.retail.stores.webmodules.transaction.ui.TransactionKeyForm"/>
+<form-bean name="ejournalKeyForm" type="oracle.retail.stores.webmodules.transaction.ui.EJournalKeyForm"/>
+<form-bean name="viewSignatureImageForm" type="oracle.retail.stores.webmodules.transaction.ui.ViewSignatureImageForm"/>
+<!--form bean entry added by Dharmendra on 25/11/2016  -->
+<form-bean name="loyalityTransactionForm" type="oracle.retail.stores.webmodules.transaction.ui.LoyalityTransactionForm"/>
+
