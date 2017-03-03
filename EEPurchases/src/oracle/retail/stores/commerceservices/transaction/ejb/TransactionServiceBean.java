@@ -6694,6 +6694,7 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
     	
 
     	String loyalityId = "";
+    	GDYNCOLoyalitConstants.isSearchByLoyalityId = false;
     	if(searchCriteria!=null && searchCriteria.getTransactionCriteria()!=null &&searchCriteria.getTransactionCriteria().getLoyalityId()!=null&&
     			searchCriteria.getTransactionCriteria().getLoyalityId().length()!=0){
     		loyalityId = searchCriteria.getTransactionCriteria().getLoyalityId();
@@ -6702,15 +6703,8 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
     	 and accordingly it sets the COLoyalitConstants.isSearchByLoyalityId constant*/
     	
     	searchCriteria.getTransactionCriteria().setSearchByLoyalityId(true);
-    	GDYNCOLoyalitConstants.isSearchByLoyalityId = Boolean.TRUE;
-    	}else{
-			if (searchCriteria != null
-					&& searchCriteria.getTransactionCriteria() != null) {
-				searchCriteria.getTransactionCriteria().setSearchByLoyalityId(
-						false);
-			}
-			GDYNCOLoyalitConstants.isSearchByLoyalityId = Boolean.FALSE;
-    	}
+    	GDYNCOLoyalitConstants.isSearchByLoyalityId = true;
+		}
     	logger.debug("COLoyalitConstants.isSearchByLoyalityId "+GDYNCOLoyalitConstants.isSearchByLoyalityId+" loyalityId "+loyalityId);
         // determine size of results list
         if (pageSize <= 0)
@@ -6748,7 +6742,20 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
 				String querystr = "SELECT distinct A.ID_STR_RT ID_STR_RT ,A.ID_WS AS ID_WS, A.AI_TRN AS AI_TRN, A.DC_DY_BSN AS DC_DY_BSN, A.TY_TRN AS TY_TRN, A.TS_TRN_END  AS TS_TRN_END FROM(SELECT DISTINCT A.ID_STR_RT AS ID_STR_RT, A.ID_WS AS ID_WS, A.AI_TRN AS AI_TRN, A.DC_DY_BSN AS DC_DY_BSN, A.TY_TRN AS TY_TRN, A.TS_TRN_END AS TS_TRN_END FROM TR_TRN  A, ct_trn_lylt B where A.ID_STR_RT=B.ID_STR_RT  AND  A.ID_WS=B.ID_WS AND  A.AI_TRN=B.AI_TRN AND  A.DC_DY_BSN=B.DC_DY_BSN AND  A.ID_STR_RT=B.ID_STR_RT AND  B.LYLT_ID= ?) A INNER JOIN (SELECT * FROM TR_RTL ) B ON A.ID_STR_RT=B.ID_STR_RT ";
 
 				ps = conn.prepareStatement(querystr);
+				if(GDYNCOLoyalitConstants.isValidLoyaltyId(loyalityId)){
 				ps.setLong(1, new Long(loyalityId));
+				}else{
+					ps.setString(1, "");
+				}
+			}else if(searchCriteria!=null && searchCriteria.getTransactionCriteria()!=null &&searchCriteria.getTransactionCriteria().getLoyaltyEmail()!=null&&
+	    			searchCriteria.getTransactionCriteria().getLoyaltyEmail().length()!=0){
+				String loyalityEmail = searchCriteria.getTransactionCriteria().getLoyaltyEmail();
+				logger.debug("searching by loyality email "+loyalityEmail);
+				String querystr = "SELECT distinct A.ID_STR_RT ID_STR_RT ,A.ID_WS AS ID_WS, A.AI_TRN AS AI_TRN, A.DC_DY_BSN AS DC_DY_BSN, A.TY_TRN AS TY_TRN, A.TS_TRN_END  AS TS_TRN_END FROM(SELECT DISTINCT A.ID_STR_RT AS ID_STR_RT, A.ID_WS AS ID_WS, A.AI_TRN AS AI_TRN, A.DC_DY_BSN AS DC_DY_BSN, A.TY_TRN AS TY_TRN, A.TS_TRN_END AS TS_TRN_END FROM TR_TRN  A, ct_trn_lylt B where A.ID_STR_RT=B.ID_STR_RT  AND  A.ID_WS=B.ID_WS AND  A.AI_TRN=B.AI_TRN AND  A.DC_DY_BSN=B.DC_DY_BSN AND  A.ID_STR_RT=B.ID_STR_RT AND  B.LYLT_EML= ?) A INNER JOIN (SELECT * FROM TR_RTL ) B ON A.ID_STR_RT=B.ID_STR_RT ";
+
+				ps = conn.prepareStatement(querystr);
+				
+				ps.setString(1, loyalityEmail);
 			}
 			
 			
@@ -7272,7 +7279,12 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
             if (resultSet.next())
             {            	
             	dto.setLoyaltyID(resultSet.getLong(1));
-            	dto.setLoyaltyEmail(resultSet.getString(2));
+            	String loyalityEmail =resultSet.getString(2);
+				if (loyalityEmail != null && loyalityEmail.length() != 0) {
+					dto.setLoyaltyEmail(loyalityEmail);
+				} else {
+					dto.setLoyaltyEmail("");
+				}
             }
 
         }
@@ -7408,7 +7420,7 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
    	 * @param storeNumber
    	 * @throws RemoteException
    	 */
-    public void updateLoyalityDtls(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber) throws java.rmi.RemoteException{
+    public boolean updateLoyalityDtls(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber) throws java.rmi.RemoteException{
     	  
     	logger.debug( "seqNumber "+seqNumber+" loyalityId "+loyalityId+" loyalityEmail "+loyalityEmail+" workstationId "+workstationId+" storeNumber "+storeNumber);
     	logger.info( "seqNumber "+seqNumber+" loyalityId "+loyalityId+" loyalityEmail "+loyalityEmail+" workstationId "+workstationId+" storeNumber "+storeNumber);
@@ -7429,15 +7441,18 @@ public class TransactionServiceBean extends SessionBeanAdapter implements Transa
 			noOfRowsUpdated = pstmt.executeUpdate();
 			pstmt.close();
 			}catch(SQLException e ){
-				
-			 logger.debug(e.getMessage());	
-			}finally
-		      {
-				 getDBUtils().closeStatement(pstmt);
-		         getDBUtils().closeConnection(connection);;
-		      }
-		logger.info("noOfRowsUpdated "+noOfRowsUpdated);
-		logger.debug("noOfRowsUpdated "+noOfRowsUpdated);
+			 logger.error(e.getMessage());	
+		} finally {
+			getDBUtils().closeStatement(pstmt);
+			getDBUtils().closeConnection(connection);
+			
+		}
+		if (noOfRowsUpdated > 0) {
+			return true;
+		} else {
+			return false;
+		}
+		
 				
 		}
     

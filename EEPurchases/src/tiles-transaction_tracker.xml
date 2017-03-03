@@ -455,6 +455,13 @@
         <put name="body" value="/centralizedElectronicJournal/gdyn_ejLoyTransactionDetailJournalView.jsp"/>
         <put name="title" value="centralizedElectronicJournal.journalView.title"/>
     </definition>
+    
+    <!--tag added by Dharmendra on 02/03/2016 to show loyalty transaction update status -->
+	<definition name="centralizedElectronicJournal.saveloyalityDtlsView" extends="ejournal">
+        <put name="helpURL" value="journalview"/>
+        <put name="body" value="/centralizedElectronicJournal/gdyn_saveLoyaltyDetails.jsp"/>
+        <put name="title" value="centralizedElectronicJournal.journalView.title"/>
+    </definition>
     <definition name="centralizedElectronicJournal.journalOnlyView" extends="ejournal">
         <put name="helpURL" value="journalview"/>
         <put name="body" value="/centralizedElectronicJournal/ejournalDetailOnlyView.jsp"/>

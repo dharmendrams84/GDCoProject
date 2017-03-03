@@ -6,37 +6,22 @@
 
 <%@ page import="oracle.retail.stores.security.SecurityFactory"%>
 
-<bean:define id="searchAction" name="customerSearchAction" scope="request" type="java.lang.String"/>
-<bean:define id="searchTitle" name="customerSearchTitle" scope="request"
-    type="java.lang.String" />
+
+
 <%
-  String customerName= SecurityFactory.getEncoder().encodeForHTML((String)request.getAttribute("customerName"));
-  String customerID=(String)request.getAttribute("customerId");
-  String requestFrom=(String)request.getAttribute("result");
-  String action="/customer/customerSearchCriteria.do";
-
-  if(requestFrom!=null)
-  {
-      if(requestFrom.equals("fromAddCustomer"))
-      {
-          action="/customer/addCustomerInfo.do";
-      }
-      else
-      {
-          action="/customer/customerSearchCriteria.do";
-      }
-
-  }
+	String transactionId = (String) request
+			.getAttribute("transactionId");
+	boolean transactionUpdateStatus = (Boolean) request.getAttribute("transactionUpdateStatus");
 %>
 
-<form method="POST" action="<%=request.getContextPath() + action%>">
+<form method="POST" action="/centraloffice/centralizedElectronicJournal/ejTransactionSearch.do">
 
     <table cellspacing="0" cellpadding="0" width="100%" border="0" bgcolor="white" height="100%">
         <tbody><tr height="15" name="TitleBuffer">
             <td colspan="2"> &nbsp;</td>
         </tr>
         <tr height="35" valign="middle" name="TitleRow">
-            <td align="left" class="pageheadercat"><bean:message key='<%=searchTitle%>'/></td>
+            <td align="left" class="pageheadercat"></td>
             <td> </td>
         </tr>
         <tr>
@@ -60,33 +45,23 @@
                      <tr>
                         <td class="normal">&nbsp;</td>
                     </tr>
-                    <tr>
-                       <%if(requestFrom.equals("fromDeleteCustomer"))
-                       { %>
-                        <td align="center" class="normal"><bean:message key="customer.delete.result.message"/></td>
-                       <%}
-                        else
-                         {
-                        %>
-                         <td align="center" class="normal"><bean:message key="customer.add.confirmation.message"/></td>
-                        <%} %>
-                    </tr>
-                    <tr>
-                        <td class="normal"> </td>
-                    </tr>
-                    <tr>
-                    <%if(requestFrom.equals("fromDeleteCustomer"))
-                      { %>
-                        <td align="center" class="normal"><bean:message key="customer.add.confirmation.partOne"/> <%=customerName%>/<%=customerID%> <bean:message key="customer.delete.result.partOne"/></td>
-                       <%
-                        }
-                        else
-                         {
-                        %>
-                        <td align="center" class="normal"><bean:message key="customer.add.confirmation.partOne"/> <%=customerName%>/<%=customerID%> <bean:message key="customer.add.confirmation.partTwo"/></td>
-                     <%} %>
-                    </tr>
-                    <tr>
+					<tr>
+								<%
+									if (transactionUpdateStatus) {
+								%>
+								<td align="center" class="normal">Transaction <%=transactionId%>
+									<bean:message key="customer.add.confirmation.partTwo" /></td>
+
+								<%
+									} else {
+								%>
+								<td align="center" class="normal">Transaction details could
+									not be saved</td>
+								<%
+									}
+								%>
+					</tr>
+					<tr>
                         <td class="normal"> </td>
                     </tr>
                     <tr>

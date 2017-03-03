@@ -390,11 +390,11 @@ public class EJournalManagerBean extends SessionBeanAdapter implements EJournalM
 	 * @param storeNumber
 	 * @throws RemoteException
 	 */
-    public void updateLoyalityDetails(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber)
+    public boolean updateLoyalityDetails(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber)
     {	
         try
         {
-          	 getTransactionService().updateLoyalityDtls(seqNumber, loyalityId, loyalityEmail,workstationId,storeNumber);
+         return	 getTransactionService().updateLoyalityDtls(seqNumber, loyalityId, loyalityEmail,workstationId,storeNumber);
             
         }
         catch (Exception e)

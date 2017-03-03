@@ -19,4 +19,15 @@ public class GDYNCOLoyalitConstants implements Serializable{
 			return false;
 		}
 	}
+	
+	public static boolean isValidLoyaltyId(String loyaltyId) {
+
+		try {
+			Long.parseLong(loyaltyId);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+
+		return true;
+	}
 }

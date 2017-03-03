@@ -42,13 +42,17 @@ public final class GDYNUpdateLoyalityEJournalAction extends Action
         String loyalityEmail = ((GDYNLoyalityTransactionForm) form).getLoyalityEmail();
         String sequenceNumber =  ((GDYNLoyalityTransactionForm) form).getSequenceNumber();
         String  workstationId =    ((GDYNLoyalityTransactionForm) form).getWorkstationId();
-         logger.info("storeNumber "+storeNumber+ " businessDayString "+businessDayString+" loyalityId "+loyalityId+" loyalityEmail "+loyalityEmail);
-         logger.info("sequenceNumber "+sequenceNumber+ " workstationId "+workstationId);
+        String fullTransactionNumber = request.getParameter("fullTransactionNumber");
+        request.setAttribute("transactionId",fullTransactionNumber);
+        request.setAttribute("result","success");
+        logger.info("storeNumber "+storeNumber+ " businessDayString "+businessDayString+" loyalityId "+loyalityId+" loyalityEmail "+loyalityEmail);
+        logger.info("sequenceNumber "+sequenceNumber+ " workstationId "+workstationId+"fullTransactionNumber");
         
          EJournalManagerRemote eJournalManager = (EJournalManagerRemote) ServiceLocator.getInstance().getRemoteService(
                  "java:comp/env/ejb/EJournalManager", EJournalManagerHome.class);
        
-        eJournalManager.updateLoyalityDetails(sequenceNumber, loyalityId, loyalityEmail,workstationId,storeNumber);
+       boolean transactionUpdateStatus = eJournalManager.updateLoyalityDetails(sequenceNumber, loyalityId, loyalityEmail,workstationId,storeNumber);
+       request.setAttribute("transactionUpdateStatus",transactionUpdateStatus);
         return (mapping.findForward("success"));
       //  return mapping.getInputForward();
     }

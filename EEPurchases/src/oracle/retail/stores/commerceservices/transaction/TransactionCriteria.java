@@ -91,6 +91,11 @@ public class TransactionCriteria extends EJournalCriteria
     /*new parameter and corresponding getter and setter added by dharmendra on 23/11/2016 to hold loyality id value entered by the user*/
     private String loyalityId;
     /*new parameter and corresponding getter and setter added by dharmendra on 23/11/2016 to determine whether to serach by loyality id*/
+   
+    /*new parameter and corresponding getter and setter added by dharmendra on 23/11/2016 to hold loyality id value entered by the user*/
+    private String loyaltyEmail;
+    /*new parameter and corresponding getter and setter added by dharmendra on 23/11/2016 to determine whether to serach by loyality id*/
+
     private boolean searchByLoyalityId = false;
     
     public TransactionCriteria()
@@ -306,6 +311,20 @@ public class TransactionCriteria extends EJournalCriteria
 	 */
 	public void setSearchByLoyalityId(boolean searchByLoyalityId) {
 		this.searchByLoyalityId = searchByLoyalityId;
+	}
+
+	/**
+	 * @return the loyaltyEmail
+	 */
+	public String getLoyaltyEmail() {
+		return loyaltyEmail;
+	}
+
+	/**
+	 * @param loyaltyEmail the loyaltyEmail to set
+	 */
+	public void setLoyaltyEmail(String loyaltyEmail) {
+		this.loyaltyEmail = loyaltyEmail;
 	}
 	
 	

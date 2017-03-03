@@ -249,6 +249,8 @@ public class SearchTransactionAction extends Action
     {
         Locale defLocale = LocaleMap.getLocale(LocaleMap.DEFAULT);
         String loyalityId = request.getParameter("loyalityId");
+        String loyaltyEmail = request.getParameter("loyaltyEmail");
+        logger.debug("loyaltyEmail "+loyaltyEmail+" : loyalityId "+loyalityId);
         String optionVal[] = null;
         ActionMessages errors = new ActionMessages();
         String action = request.getParameter("action");
@@ -396,12 +398,19 @@ public class SearchTransactionAction extends Action
                     getCustomerCriteria(searchTransactionForm), getSignatureCaptureCriteria(searchTransactionForm));
             searchCriteria.setLocale(getLocale(request));
             /*code changes added by Dharmendra on 23/11/2016 to set Loyality Id entered by the user to TransactionCriteria*/
-            if(searchCriteria!=null && searchCriteria.getTransactionCriteria()!=null
-                    &&loyalityId!=null&&loyalityId.length()!=0){
-                   
-                  searchCriteria.getTransactionCriteria().setLoyalityId(loyalityId);
-                  
-                  }
+			if (searchCriteria != null
+					&& searchCriteria.getTransactionCriteria() != null
+					&& loyalityId != null && loyalityId.length() != 0) {
+				logger.debug("setting loyality id to search "+loyalityId);
+				searchCriteria.getTransactionCriteria().setLoyalityId(
+						loyalityId);
+
+			}else if(searchCriteria != null
+					&& searchCriteria.getTransactionCriteria() != null
+					&& loyaltyEmail != null && loyaltyEmail.length() != 0){
+				logger.debug("setting loyalty Email to search "+loyaltyEmail);
+				searchCriteria.getTransactionCriteria().setLoyaltyEmail(loyaltyEmail);
+			}
 
             // put searchCriteria in the session for paging
             request.getSession().setAttribute("searchCriteria", searchCriteria);

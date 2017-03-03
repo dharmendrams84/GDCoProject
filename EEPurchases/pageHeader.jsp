@@ -55,7 +55,7 @@
                 <% } %>
             </webmodules:isUserInRoleList>
             <!-- new tab added by Dharmendra to display loyality Ejournal link -->
-            <webmodules:isUserInRoleList roleList="view_journalview">
+            <webmodules:isUserInRoleList roleList="view_loyalty">
                 <bean:message  key="transaction.centej.goto"/>&nbsp;
                 <webmodules:secureQueryLink url="/centralizedElectronicJournal/showLoyalityEJournal.do" addContextPath="true" key="transaction.centej.link.loyality">
                     <webmodules:secureQueryParameter name="transactionNumber" value="<%=transactionDTO.getTransactionNumber()%>"/>

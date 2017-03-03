@@ -629,7 +629,7 @@ public interface TransactionServiceIfc
    	 * @param storeNumber
    	 * @throws RemoteException
    	 */
-   public void updateLoyalityDtls(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber)throws RemoteException;
+   public boolean updateLoyalityDtls(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber)throws RemoteException;
     
     
     public void setLoyaltyDetails(TransactionDTO dto) throws RemoteException;

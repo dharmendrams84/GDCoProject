@@ -130,7 +130,7 @@
 	name="loyalityTransactionForm"
 	scope="request"
 	input="/centralizedElectronicJournal/searchDone.do">
-    <forward name="success" path="/centralizedElectronicJournal/ejTransactionSearch.do"/>
+    <forward name="success" path="centralizedElectronicJournal.saveloyalityDtlsView"/>
 </action>
 
 <action path="/centralizedElectronicJournal/showOnlyEJournal"

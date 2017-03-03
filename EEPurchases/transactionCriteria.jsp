@@ -56,7 +56,6 @@
         }
     }
     }
-
 </script>
 <table width="93%" border="0" cellspacing="1" cellpadding="3">
   <tr>
@@ -90,7 +89,7 @@
       <div align="right">Loyalty ID:</div>
     </td>
     <td height="20" width="27%">
-      <input type="text" class="data" name="loyalityId" size="15" MAXLENGTH="20" value="">
+      <input type="text" class="data" name="loyalityId" id="loyalityId" size="15" MAXLENGTH="20" value="">
     </td>
   </tr>
    <tr>

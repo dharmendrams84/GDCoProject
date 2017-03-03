@@ -200,7 +200,7 @@ public interface EJournalManagerIfc
 	 * @param storeNumber
 	 * @throws RemoteException
 	 */
-	void updateLoyalityDetails(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber)throws RemoteException;
+	boolean updateLoyalityDetails(String seqNumber,String loyalityId,String loyalityEmail,String workstationId,String storeNumber)throws RemoteException;
 	
 	/**
 	 * This method is created by Dharmendra on 28/11/2016 to retrieve loyality details from CT_TRN_LYLT table based on the below parameters
