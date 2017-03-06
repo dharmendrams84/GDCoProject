@@ -131,6 +131,7 @@
 	scope="request"
 	input="/centralizedElectronicJournal/searchDone.do">
     <forward name="success" path="centralizedElectronicJournal.saveloyalityDtlsView"/>
+    <forward name="invalidLoyaltyId" path="centralizedElectronicJournal.invalidloyalityIdView"/>
 </action>
 
 <action path="/centralizedElectronicJournal/showOnlyEJournal"
