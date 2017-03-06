@@ -7,10 +7,6 @@
 <%@ taglib uri="/WEB-INF/webmodules.tld" prefix="webmodules" %>
 
 <SCRIPT LANGUAGE="JavaScript">
-/* function done()
-{
-    window.location='<html:rewrite page="/centralizedElectronicJournal/searchDone.do" />';
-} */
 function cancelLoyalityTransaction()
 {
 	
@@ -19,7 +15,7 @@ function cancelLoyalityTransaction()
 }
 </SCRIPT>
 <jsp:useBean id="eJournalViewBean" scope="request" class="gdyn.retail.stores.webmodules.ejournal.GDYNLoyalityEJournalViewBean"/>
-<form name="export" action="<html:rewrite page="/centralizedElectronicJournal/updateLoyalityEJournal.do"/>" method="POST"/>
+<form name="loyTransactionDtlsForm" id="loyTransactionDtlsForm" action="<html:rewrite page="/centralizedElectronicJournal/updateLoyalityEJournal.do"/>"  method="POST"/>
 
 
 
