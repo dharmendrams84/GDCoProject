@@ -3,6 +3,8 @@
 package gdyn.retail.stores.webmodules.transaction.ui;
 
 
+import gdyn.retail.stores.commerceservices.transaction.GDYNCOLoyalitConstants;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import oracle.retail.stores.foundation.common.ServiceLocator;
@@ -42,18 +44,35 @@ public final class GDYNUpdateLoyalityEJournalAction extends Action
         String loyalityEmail = ((GDYNLoyalityTransactionForm) form).getLoyalityEmail();
         String sequenceNumber =  ((GDYNLoyalityTransactionForm) form).getSequenceNumber();
         String  workstationId =    ((GDYNLoyalityTransactionForm) form).getWorkstationId();
-        String fullTransactionNumber = request.getParameter("fullTransactionNumber");
-        request.setAttribute("transactionId",fullTransactionNumber);
-        request.setAttribute("result","success");
-        logger.info("storeNumber "+storeNumber+ " businessDayString "+businessDayString+" loyalityId "+loyalityId+" loyalityEmail "+loyalityEmail);
-        logger.info("sequenceNumber "+sequenceNumber+ " workstationId "+workstationId+"fullTransactionNumber");
-        
-         EJournalManagerRemote eJournalManager = (EJournalManagerRemote) ServiceLocator.getInstance().getRemoteService(
-                 "java:comp/env/ejb/EJournalManager", EJournalManagerHome.class);
-       
-       boolean transactionUpdateStatus = eJournalManager.updateLoyalityDetails(sequenceNumber, loyalityId, loyalityEmail,workstationId,storeNumber);
-       request.setAttribute("transactionUpdateStatus",transactionUpdateStatus);
-        return (mapping.findForward("success"));
+		if (GDYNCOLoyalitConstants.isEmptryString(loyalityId)
+				|| loyalityId.length() != 10
+				|| !GDYNCOLoyalitConstants.isValidLoyaltyId(loyalityId)
+				|| !GDYNCOLoyalitConstants.validateLuhnAlgorithm(loyalityId)) {
+			request.setAttribute("loyalityId", loyalityId);
+			return (mapping.findForward("invalidLoyaltyId"));
+		} else {
+			String fullTransactionNumber = request
+					.getParameter("fullTransactionNumber");
+			request.setAttribute("transactionId", fullTransactionNumber);
+			request.setAttribute("result", "success");
+			logger.info("storeNumber " + storeNumber + " businessDayString "
+					+ businessDayString + " loyalityId " + loyalityId
+					+ " loyalityEmail " + loyalityEmail);
+			logger.info("sequenceNumber " + sequenceNumber + " workstationId "
+					+ workstationId + "fullTransactionNumber");
+
+			EJournalManagerRemote eJournalManager = (EJournalManagerRemote) ServiceLocator
+					.getInstance().getRemoteService(
+							"java:comp/env/ejb/EJournalManager",
+							EJournalManagerHome.class);
+
+			boolean transactionUpdateStatus = eJournalManager
+					.updateLoyalityDetails(sequenceNumber, loyalityId,
+							loyalityEmail, workstationId, storeNumber);
+			request.setAttribute("transactionUpdateStatus",
+					transactionUpdateStatus);
+			return (mapping.findForward("success"));
+		}
       //  return mapping.getInputForward();
     }
 
