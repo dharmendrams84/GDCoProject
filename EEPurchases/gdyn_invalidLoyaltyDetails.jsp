@@ -47,7 +47,7 @@
                     </tr>
 					<tr>
 
-						<td align="center" class="normal">Loyalty <%=loyalityId%>
+						<td align="center" class="normal">Loyalty ID <%=loyalityId%>
 									entered is not valid</td>
 
 
