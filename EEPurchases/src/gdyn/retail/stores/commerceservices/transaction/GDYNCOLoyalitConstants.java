@@ -21,9 +21,6 @@ public class GDYNCOLoyalitConstants implements Serializable{
 	}
 	
 	public static boolean isValidLoyaltyId(String loyaltyId) {
-		if(loyaltyId.startsWith("0")||loyaltyId.startsWith("1")){
-			return false;
-		}
 		try {
 			Long.parseLong(loyaltyId);
 		} catch (NumberFormatException e) {
