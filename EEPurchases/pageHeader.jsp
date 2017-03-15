@@ -55,6 +55,7 @@
                 <% } %>
             </webmodules:isUserInRoleList>
             <!-- new tab added by Dharmendra to display loyality Ejournal link -->
+            <%if((Boolean)request.getAttribute("isUserInLoyaltyRole")){%>
             <webmodules:isUserInRoleList roleList="view_loyalty">
                 <bean:message  key="transaction.centej.goto"/>&nbsp;
                 <webmodules:secureQueryLink url="/centralizedElectronicJournal/showLoyalityEJournal.do" addContextPath="true" key="transaction.centej.link.loyality">
@@ -62,6 +63,7 @@
                     <webmodules:secureQueryParameter name="businessDate" value="<%=transactionDTO.getBusinessDateString()%>"/>
                 </webmodules:secureQueryLink><br>
             </webmodules:isUserInRoleList>
+            <% }%>
             <p>
             <bean:message  key="transaction.centej.trandet.pageheader.prompt"/>
             </p>
