@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+          "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+
+<struts-config>
+
+    
+     <form-beans>
+    	<form-bean name="employeeForm" type="com.forms.EmployeeForm"/>
+    	<form-bean name="helloWorldForm" type="com.forms.HelloWorldForm"/>
+    </form-beans>
+    
+    	    
+
+	<!-- <global-forwards>
+        <forward name="helloWorld" path="/helloWorld.do"/>
+    </global-forwards> -->
+
+	<action-mappings>
+		<action path="/employee" type="com.actions.EmployeeAction"
+			name="helloWorldForm">
+			<forward name="success" path="/UpdateEmployeeDetails.jsp" />
+			<forward name="failure" path="/NoEmployeeFound.jsp" />
+			<forward name="allEmplSuccess" path="/AllEmplDtls.jsp" />
+
+		</action>
+
+		<action path="/updateEmployeDetailsAction" type="com.actions.UpdateEmplDtlsAction">
+			<forward name="success" path="/home.jsp" />
+		</action>
+
+
+		<action path="/allemployee" type="com.actions.DisplayEmplAction"
+			name="helloWorldForm">
+			<forward name="success" path="/output.jsp" />
+			<forward name="failure" path="/NoEmployeeFound.jsp" />
+		</action>
+		
+		<action path="/testAction" type="com.actions.DisplayEmplAction">
+			<forward name="success" path="/AddEmployee1.jsp" />
+			
+		</action>
+
+	</action-mappings>
+
+</struts-config>

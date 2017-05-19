@@ -176,15 +176,8 @@ public class ShowDetailsAction extends Action
 			saveErrors(request, errors);
 			return mapping.findForward("notAllowed");
         }
-        if(request.isUserInRole("view_loyalty")){
-        	request.setAttribute("isUserInLoyaltyRole", true);
-        	logger.debug("setting isUserInLoyaltyRole "+true);
-        }else{
-        	request.setAttribute("isUserInLoyaltyRole", false);
-        	logger.debug("setting isUserInLoyaltyRole "+false);
-        }
-        logger.debug("form class: " + form.getClass().getName()+" request.isUserInRole(view_loyalty) "+request.isUserInRole("view_loyalty"));
         
+        logger.debug("form class: " + form.getClass().getName());
 
         if (TransactionConstants.SEARCH_BY_SIG_CAP.equals(currentSearch) &&  request.isUserInRole("view_sigcap"))
         {
@@ -206,11 +199,6 @@ public class ShowDetailsAction extends Action
         {
             forwardString = "customerView";
         }
-        /*else if (request.isUserInRole("view_loyalty"))
-        {
-        	logger.debug("user is in view_loyalty");
-            forwardString = "loyaltyDtlsView";
-        }*/
 
         if (StringUtils.isNotEmpty(transactionNumber))
         {
