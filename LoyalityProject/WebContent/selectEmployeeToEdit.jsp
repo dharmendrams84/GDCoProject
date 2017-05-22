@@ -102,10 +102,7 @@
                            
                             <tr>
                                 <td colspan="2" align="left" class="heading2"><br>
-                                    Search results: Showing
-                                    2
-                                    of
-                                    2
+                                    Search results
                                 </td>
                             </tr>
                         </tbody></table>
@@ -119,7 +116,6 @@
 
                                
                                 <td width="15%" class="tableheadrow">Last Name</td>
-      
 
                                 <td width="15%" class="tableheadrow">First Name</td>
                                 <td width="15%" class="tableheadrow">Position Code</td>
@@ -136,10 +132,16 @@
 													</td>
 													<td class="normal" align="center">
 													<bean:write name="employee" property="lastName"/>
+													</td>													
+													<td class="normal" align="center">
+													<bean:write name="employee" property="positionCode"/>
 													</td>
-													<td class="normal" align="center"></td>
-													<td class="normal" align="center">cpala</td>
-													<td class="normal" align="center">Active</td>
+													<td class="normal" align="center">
+													<bean:write name="employee" property="emplNumber"/>
+													</td>
+													<td class="normal" align="center">
+													<bean:write name="employee" property="emplStatus"/>
+													</td>													
 												</tr>
 
 											</logic:iterate>
